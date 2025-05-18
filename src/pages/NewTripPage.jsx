@@ -2,9 +2,15 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { v4 as uuidv4 } from 'uuid';
+import CountdownTimer from '../components/CountdownTimer';
+import BackgroundSlider from '../components/BackgroundSlider';
+import { useTheme } from '../contexts/ThemeContext';
+import { useBackground } from '../contexts/BackgroundContext';
 
 const NewTripPage = () => {
   const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  const { backgroundImages } = useBackground();
   
   const [tripData, setTripData] = useState({
     title: '',
@@ -29,7 +35,16 @@ const NewTripPage = () => {
     { value: 'America/Los_Angeles', label: 'Pacific Time (PT) - Los Angeles' },
     { value: 'Europe/London', label: 'Greenwich Mean Time (GMT) - London' },
     { value: 'Europe/Paris', label: 'Central European Time (CET) - Paris' },
+    // Indian time zones
+    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - New Delhi' },
+    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Mumbai' },
+    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Kolkata' },
+    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Chennai' },
+    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Bangalore' },
+    // Other Asian time zones
     { value: 'Asia/Tokyo', label: 'Japan Standard Time (JST) - Tokyo' },
+    { value: 'Asia/Singapore', label: 'Singapore Time (SGT) - Singapore' },
+    { value: 'Asia/Dubai', label: 'Gulf Standard Time (GST) - Dubai' },
     { value: 'Australia/Sydney', label: 'Australian Eastern Time (AET) - Sydney' }
   ];
   
@@ -173,40 +188,15 @@ const NewTripPage = () => {
   };
   
   return (
-    <div className="min-h-screen relative overflow-hidden" 
-         style={{
-           background: "linear-gradient(135deg, #f5f7fa 0%, #eef1f5 100%)",
-           backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a3bffa' fill-opacity='0.12'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
-         }}>
-      {/* Colorful blobs */}
-      <div className="absolute top-0 right-0" 
-           style={{
-             width: "300px",
-             height: "300px",
-             backgroundImage: "radial-gradient(circle, rgba(236,72,153,0.1) 0%, rgba(236,72,153,0) 70%)"
-           }}>
-      </div>
-      <div className="absolute bottom-0 left-0" 
-           style={{
-             width: "400px",
-             height: "400px",
-             backgroundImage: "radial-gradient(circle, rgba(96,165,250,0.1) 0%, rgba(96,165,250,0) 70%)"
-           }}>
-      </div>
-      
-      {/* Floating emojis */}
-      <div className="absolute top-1/5 right-1/4 animate-float opacity-20 text-4xl">
-        🌴
-      </div>
-      <div className="absolute bottom-1/3 left-1/6 animate-bounce-slow opacity-20 text-4xl">
-        🎒
-      </div>
+    <div className={`min-h-screen relative overflow-hidden ${isDarkMode ? 'dark' : ''}`}>
+      {/* Dynamic background slider */}
+      <BackgroundSlider images={backgroundImages} interval={8000} />
       
       <div className="relative z-10">
         <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center">
-              <Link to="/" className="text-gray-600 hover:text-gray-900 mr-4">
+              <Link to="/dashboard" className="text-gray-600 hover:text-gray-900 mr-4">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -214,7 +204,8 @@ const NewTripPage = () => {
               <h1 className="text-xl font-bold text-primary-600">✈️ TripPal</h1>
             </div>
             <nav className="flex space-x-4">
-              <Link to="/" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Dashboard</Link>
+              <Link to="/" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Home</Link>
+              <Link to="/dashboard" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Dashboard</Link>
               <Link to="/itineraries" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Itineraries</Link>
               <Link to="/activities" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Activities</Link>
             </nav>
@@ -312,9 +303,21 @@ const NewTripPage = () => {
                 {/* Trip Length Display */}
                 {calculateTripLength() > 0 && (
                   <div className="mb-6">
-                    <div className="bg-gray-50 rounded p-3 text-center">
-                      <span className="text-gray-600">Trip length: </span>
-                      <span className="font-semibold">{calculateTripLength()} days</span>
+                    <div className="bg-gray-50 rounded p-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Trip length: <span className="font-semibold">{calculateTripLength()} days</span></span>
+                        
+                        {/* Add countdown preview if start date is in the future */}
+                        {tripData.startDate && new Date(tripData.startDate) > new Date() && (
+                          <div className="flex items-center bg-primary-50 px-3 py-1 rounded-full">
+                            <span className="text-primary-700 text-sm mr-2">Trip starts in:</span>
+                            <CountdownTimer 
+                              startDate={tripData.startDate} 
+                              timeZone={tripData.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}

@@ -1,167 +1,243 @@
-import React from 'react';
-import Dashboard from '../components/Dashboard';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import ThemeToggle from '../components/ThemeToggle';
+import BackgroundSlider from '../components/BackgroundSlider';
+import CurrencyDisplay from '../components/CurrencyDisplay';
+import { useTheme } from '../contexts/ThemeContext';
+import { useBackground } from '../contexts/BackgroundContext';
 
 const HomePage = () => {
+  const { isDarkMode } = useTheme();
+  const { backgroundImages } = useBackground();
+  
+  // Sample trip packages with prices
+  const tripPackages = [
+    {
+      destination: 'Goa Adventure',
+      duration: '5 days',
+      price: 25000, // in INR
+      image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
+    },
+    {
+      destination: 'Rajasthan Heritage Tour',
+      duration: '7 days',
+      price: 45000, // in INR
+      image: 'https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
+    },
+    {
+      destination: 'Kerala Backwaters',
+      duration: '6 days',
+      price: 35000, // in INR
+      image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
+    },
+  ];
+
   return (
-    <div className="min-h-screen relative overflow-hidden" 
-         style={{
-           background: "linear-gradient(135deg, #f5f7fa 0%, #eef1f5 100%)",
-           backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a3bffa' fill-opacity='0.12'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
-         }}>
-      {/* Floating Elements */}
-      <div className="absolute inset-0" 
-           style={{
-             backgroundImage: "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%234f46e5' fill-opacity='0.05' d='M0,288L48,272C96,256,192,224,288,197.3C384,171,480,149,576,165.3C672,181,768,235,864,250.7C960,267,1056,245,1152,208C1248,171,1344,117,1392,90.7L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E\")",
-             backgroundSize: "cover",
-             backgroundPosition: "center bottom",
-             zIndex: "0",
-             opacity: "0.8"
-           }}>
-      </div>
+    <div className={`min-h-screen relative overflow-hidden ${isDarkMode ? 'dark' : ''}`}>
+      {/* Dynamic background slider */}
+      <BackgroundSlider images={backgroundImages} interval={8000} />
       
-      {/* Colorful blobs */}
-      <div className="absolute top-0 right-0" 
-           style={{
-             width: "300px",
-             height: "300px",
-             backgroundImage: "radial-gradient(circle, rgba(236,72,153,0.1) 0%, rgba(236,72,153,0) 70%)"
-           }}>
-      </div>
-      <div className="absolute bottom-0 left-0" 
-           style={{
-             width: "400px",
-             height: "400px",
-             backgroundImage: "radial-gradient(circle, rgba(96,165,250,0.1) 0%, rgba(96,165,250,0) 70%)"
-           }}>
-      </div>
-      
-      {/* Floating emojis */}
-      <div className="absolute top-1/4 left-1/6 animate-bounce-slow opacity-20 text-4xl">
-        ✈️
-      </div>
-      <div className="absolute top-2/3 right-1/4 animate-pulse opacity-20 text-4xl">
-        🏝️
-      </div>
-      <div className="absolute bottom-1/3 left-1/3 animate-wiggle opacity-20 text-4xl">
-        🧳
-      </div>
-      <div className="absolute top-1/2 right-1/6 animate-float opacity-20 text-4xl">
-        🗺️
-      </div>
-      
-      {/* Main content */}
-      <div className="relative z-10">
-        <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b">
-          <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-primary-600">✈️ TripPal</h1>
-            </div>
-            <div className="flex items-center">
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="mr-4"
-              >
-                <Link 
-                  to="/new-trip" 
-                  className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
-                >
-                  <svg className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                  </svg>
-                  <span>New Trip</span>
-                </Link>
-              </motion.div>
-              <nav className="flex space-x-4">
-                <Link to="/" className="px-3 py-2 rounded-md bg-primary-50 text-primary-700 font-medium">Dashboard</Link>
-                <Link to="/itineraries" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Itineraries</Link>
-                <Link to="/settings" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Settings</Link>
+      {/* Overlay content */}
+      <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Header with theme toggle */}
+        <header className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm shadow-sm">
+          <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-primary-600 dark:text-primary-400">✈️ TripPal</h1>
+            <div className="flex items-center space-x-4">
+              <nav className="hidden md:flex space-x-4">
+                <Link to="/" className="px-3 py-2 rounded-md text-gray-900 dark:text-white font-medium">Home</Link>
+                <Link to="/dashboard" className="px-3 py-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium">Dashboard</Link>
+                <Link to="/activities" className="px-3 py-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 font-medium">Activities</Link>
               </nav>
+              <ThemeToggle />
             </div>
           </div>
         </header>
         
-        <div className="bg-gradient-to-r from-primary-500 to-primary-600 text-white py-16 relative overflow-hidden">
-          {/* Confetti pattern */}
-          <div className="absolute inset-0 opacity-10"
-               style={{
-                 backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l8.486 8.486-1.414 1.414-8.486-8.486 1.414-1.414z' /%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
-               }}>
-          </div>
-          <div className="container mx-auto px-4 text-center relative z-10">
-            <motion.h1 
-              className="text-4xl md:text-5xl font-bold mb-4"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              Welcome to TripPal 🧳
-            </motion.h1>
-            <motion.p 
-              className="text-xl md:text-2xl mb-6 opacity-90"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              Your best pal for planning perfect trips.
-            </motion.p>
-            <motion.p 
-              className="text-lg mb-8 opacity-90"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              Your trip. Your vibe. Your Pal. 🗺️
-            </motion.p>
-            <motion.div
-              className="bg-white text-primary-700 rounded-lg py-3 px-6 inline-block shadow-lg font-medium"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              No stress. Just press. Your trip, sorted with TripPal. 🎉
-            </motion.div>
-          </div>
-        </div>
-        
-        <main className="container mx-auto py-8 px-4 relative">
-          {/* Striped diagonal pattern */}
-          <div className="absolute top-0 left-0 w-full h-full opacity-5 -z-10"
-               style={{
-                 backgroundImage: "linear-gradient(45deg, #3b82f6 25%, transparent 25%, transparent 50%, #3b82f6 50%, #3b82f6 75%, transparent 75%, transparent)",
-                 backgroundSize: "20px 20px"
-               }}>
-          </div>
-          
-          <motion.div 
-            className="mb-10 text-center backdrop-blur-sm bg-white/70 p-8 rounded-2xl shadow-lg"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-          >
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Ready for your next adventure? 🏝️</h2>
-            <p className="text-gray-600 mb-6">Let TripPal help you organize the perfect journey</p>
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <Link 
-                to="/new-trip" 
-                className="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-md font-medium"
+        {/* Hero section */}
+        <section className="flex-grow flex items-center">
+          <div className="container mx-auto px-6 py-16 md:py-24">
+            <div className="md:w-2/3 lg:w-1/2">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md p-8 rounded-xl shadow-xl"
               >
-                <span className="text-xl mr-2">📍</span>
-                Start Planning Now
-              </Link>
-            </motion.div>
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+                  Plan Your Perfect Trip with TripPal
+                </h1>
+                <p className="text-xl text-gray-700 dark:text-gray-300 mb-8">
+                  Your trip. Your vibe. Your Pal. 🗺️
+                </p>
+                <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                  <Link to="/dashboard" className="inline-block px-8 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition duration-150 text-center">
+                    Get Started
+                  </Link>
+                  <a href="#features" className="inline-block px-8 py-3 bg-white dark:bg-gray-800 text-primary-600 dark:text-primary-400 font-medium rounded-lg border border-primary-600 dark:border-primary-400 hover:bg-primary-50 dark:hover:bg-gray-700 transition duration-150 text-center">
+                    Learn More
+                  </a>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+      </div>
+      
+      {/* Features Section */}
+      <section id="features" className="py-16 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-6">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Why Choose TripPal?</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Everything you need to plan the perfect trip, all in one place.
+            </p>
           </motion.div>
           
-          <div className="backdrop-blur-sm bg-white/70 p-6 rounded-2xl shadow-lg">
-            <Dashboard />
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                icon: "🗓️",
+                title: "Drag & Drop Planning",
+                description: "Easily organize your days with our intuitive drag-and-drop interface."
+              },
+              {
+                icon: "💰",
+                title: "Budget Tracking",
+                description: "Keep track of expenses and stay within your travel budget."
+              },
+              {
+                icon: "📍",
+                title: "Location Intelligence",
+                description: "Optimize your daily routes with smart location grouping."
+              },
+              {
+                icon: "🔔",
+                title: "Travel Reminders",
+                description: "Never miss a reservation with built-in notifications."
+              },
+              {
+                icon: "📋",
+                title: "Travel Templates",
+                description: "Start with expertly designed itinerary templates."
+              },
+              {
+                icon: "📱",
+                title: "Mobile Access",
+                description: "Access your plans anywhere, even without internet."
+              }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <span className="text-4xl mb-4 block">{feature.icon}</span>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{feature.description}</p>
+              </motion.div>
+            ))}
           </div>
-        </main>
-      </div>
+        </div>
+      </section>
+      
+      {/* Trip Packages with INR Currency */}
+      <section className="py-16 bg-gray-100 dark:bg-gray-800">
+        <div className="container mx-auto px-6">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Featured Trip Packages</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Explore our specially curated trips with the best prices.
+            </p>
+          </motion.div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {tripPackages.map((pkg, index) => (
+              <motion.div
+                key={index}
+                className="bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="h-48 overflow-hidden">
+                  <img 
+                    src={pkg.image} 
+                    alt={pkg.destination}
+                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" 
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{pkg.destination}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">{pkg.duration}</p>
+                  <div className="flex justify-between items-center">
+                    <CurrencyDisplay amount={pkg.price} initialCurrency="INR" />
+                    <Link to="/dashboard" className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors text-sm">
+                      Book Now
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* Call to Action */}
+      <section className="py-16 bg-primary-600 dark:bg-primary-900 text-white">
+        <div className="container mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="text-3xl font-bold mb-4">Ready to start planning your next adventure?</h2>
+            <p className="text-xl mb-8 text-primary-100">Your trip. Your vibe. Your Pal. Join thousands of travelers today!</p>
+            <Link to="/dashboard" className="inline-block px-8 py-3 bg-white text-primary-600 dark:text-primary-700 font-bold rounded-lg hover:bg-gray-100 transition duration-150">
+              Get Started for Free
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+      
+      {/* Footer */}
+      <footer className="bg-gray-900 dark:bg-black text-white py-12">
+        <div className="container mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-6 md:mb-0">
+              <h2 className="text-2xl font-bold">TripPal</h2>
+              <p className="text-gray-400">Your trip. Your vibe. Your Pal.</p>
+            </div>
+            <div className="flex space-x-6">
+              <a href="#" className="text-gray-400 hover:text-white transition">About</a>
+              <a href="#" className="text-gray-400 hover:text-white transition">Features</a>
+              <a href="#" className="text-gray-400 hover:text-white transition">Pricing</a>
+              <a href="#" className="text-gray-400 hover:text-white transition">Contact</a>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
+            <p>&copy; {new Date().getFullYear()} TripPal. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

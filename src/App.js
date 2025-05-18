@@ -9,10 +9,13 @@ import WelcomeScreen from './components/WelcomeScreen';
 import AnimatedSvgLoader from './components/AnimatedSvgLoader';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
+import DashboardPage from './pages/DashboardPage';
 import ItineraryPage from './pages/ItineraryPage';
 import ActivitiesPage from './pages/ActivitiesPage';
 import ActivityDetailPage from './pages/ActivityDetailPage';
 import NewTripPage from './pages/NewTripPage';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { BackgroundProvider } from './contexts/BackgroundContext';
 import './styles/index.css';
 
 // Sample initial data
@@ -275,17 +278,20 @@ function App() {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/itineraries" element={<ActivitiesPage />} />
-        <Route path="/itinerary/:id" element={<ItineraryPage />} />
-        <Route path="/activities" element={<ActivitiesPage />} />
-        <Route path="/activity/:id" element={<ActivityDetailPage />} />
-        <Route path="/activity/:id/edit" element={<ActivityDetailPage />} />
-        <Route path="/new-trip" element={<NewTripPage />} />
-      </Routes>
-    </Router>
+    <ThemeProvider>
+      <BackgroundProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/itinerary/:tripId" element={<ItineraryPage />} />
+            <Route path="/activities" element={<ActivitiesPage />} />
+            <Route path="/activity/:activityId" element={<ActivityDetailPage />} />
+            <Route path="/new-trip" element={<NewTripPage />} />
+          </Routes>
+        </Router>
+      </BackgroundProvider>
+    </ThemeProvider>
   );
 }
 

@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { DragDropContext } from 'react-beautiful-dnd';
 import ItineraryBoard from '../components/ItineraryBoard';
 import { motion } from 'framer-motion';
+import BackgroundSlider from '../components/BackgroundSlider';
+import { useTheme } from '../contexts/ThemeContext';
+import { useBackground } from '../contexts/BackgroundContext';
 
 const ItineraryPage = () => {
-  const { id } = useParams();
+  const { tripId } = useParams();
+  const navigate = useNavigate();
+  const { isDarkMode } = useTheme();
+  const { backgroundImages } = useBackground();
   const [itineraryData, setItineraryData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [destinationTimeZone, setDestinationTimeZone] = useState('UTC');
@@ -15,7 +21,7 @@ const ItineraryPage = () => {
     // In a real app, you would fetch the specific itinerary data based on the ID
     setTimeout(() => {
       setItineraryData({
-        id: id,
+        id: tripId,
         title: 'Tokyo Adventure',
         startDate: '2023-12-15',
         endDate: '2023-12-25',
@@ -100,7 +106,7 @@ const ItineraryPage = () => {
       setDestinationTimeZone('Asia/Tokyo');
       setLoading(false);
     }, 1000);
-  }, [id]);
+  }, [tripId]);
   
   const handleDragEnd = (result) => {
     // Implement drag handling logic for activities and days
@@ -162,40 +168,15 @@ const ItineraryPage = () => {
   };
   
   return (
-    <div className="min-h-screen relative overflow-hidden" 
-         style={{
-           background: "linear-gradient(135deg, #f5f7fa 0%, #eef1f5 100%)",
-           backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23a3bffa' fill-opacity='0.12'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")"
-         }}>
-      {/* Colorful blobs */}
-      <div className="absolute top-0 right-0" 
-           style={{
-             width: "300px",
-             height: "300px",
-             backgroundImage: "radial-gradient(circle, rgba(236,72,153,0.1) 0%, rgba(236,72,153,0) 70%)"
-           }}>
-      </div>
-      <div className="absolute bottom-0 left-0" 
-           style={{
-             width: "400px",
-             height: "400px",
-             backgroundImage: "radial-gradient(circle, rgba(96,165,250,0.1) 0%, rgba(96,165,250,0) 70%)"
-           }}>
-      </div>
-      
-      {/* Floating emojis */}
-      <div className="absolute top-1/4 right-1/6 animate-float opacity-20 text-4xl">
-        ✈️
-      </div>
-      <div className="absolute bottom-1/4 left-1/5 animate-bounce-slow opacity-20 text-4xl">
-        📅
-      </div>
+    <div className={`min-h-screen relative overflow-hidden ${isDarkMode ? 'dark' : ''}`}>
+      {/* Dynamic background slider */}
+      <BackgroundSlider images={backgroundImages} interval={8000} />
       
       <div className="relative z-10">
         <header className="bg-white/80 backdrop-blur-sm shadow-sm border-b">
           <div className="container mx-auto px-4 py-4 flex justify-between items-center">
             <div className="flex items-center">
-              <Link to="/" className="text-gray-600 hover:text-gray-900 mr-4">
+              <Link to="/dashboard" className="text-gray-600 hover:text-gray-900 mr-4">
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -203,8 +184,8 @@ const ItineraryPage = () => {
               <h1 className="text-xl font-bold text-primary-600">✈️ TripPal</h1>
             </div>
             <nav className="flex space-x-4">
-              <Link to="/" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Dashboard</Link>
-              <Link to="/itineraries" className="px-3 py-2 rounded-md bg-primary-50 text-primary-700 font-medium">Itineraries</Link>
+              <Link to="/" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Home</Link>
+              <Link to="/dashboard" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Dashboard</Link>
               <Link to="/activities" className="px-3 py-2 rounded-md text-gray-600 hover:bg-gray-100 font-medium">Activities</Link>
             </nav>
           </div>

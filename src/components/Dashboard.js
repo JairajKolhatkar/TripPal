@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
+import CountdownTimer from './CountdownTimer';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -15,59 +16,87 @@ const Dashboard = () => {
     const sampleItineraries = [
       {
         id: 'trip-1',
-        title: 'Tokyo Adventure',
-        location: 'Tokyo, Japan',
-        startDate: '2023-12-15',
-        endDate: '2023-12-25',
+        title: 'Goa Beach Vacation',
+        location: 'Goa, India',
+        startDate: '2024-04-05',
+        endDate: '2024-04-12',
         type: 'leisure',
-        thumbnail: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26',
-        progress: 75, // percentage of planned activities
-        dayCount: 10,
+        thumbnail: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2',
+        progress: 100, // 100% complete trip
+        dayCount: 7,
         mood: '😄',
-        timeZone: 'Asia/Tokyo', // GMT+9
+        timeZone: 'Asia/Kolkata', // IST
         weather: '☀️'
       },
       {
         id: 'trip-2',
-        title: 'Paris Weekend',
-        location: 'Paris, France',
-        startDate: '2024-02-10',
-        endDate: '2024-02-13',
-        type: 'romantic',
-        thumbnail: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34',
-        progress: 45,
-        dayCount: 3,
-        mood: '❤️',
-        timeZone: 'Europe/Paris', // GMT+1
-        weather: '🌧️'
+        title: 'Rajasthan Heritage Tour',
+        location: 'Jaipur, India',
+        startDate: '2024-10-15',
+        endDate: '2024-10-22',
+        type: 'cultural',
+        thumbnail: 'https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+        progress: 35,
+        dayCount: 7,
+        mood: '🏛️',
+        timeZone: 'Asia/Kolkata', // IST
+        weather: '🌤️'
       },
       {
         id: 'trip-3',
-        title: 'Business in NYC',
-        location: 'New York, USA',
-        startDate: '2024-01-05',
-        endDate: '2024-01-10',
+        title: 'Business in Dubai',
+        location: 'Dubai, UAE',
+        startDate: '2024-07-12',
+        endDate: '2024-07-18',
         type: 'business',
-        thumbnail: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9',
-        progress: 90,
-        dayCount: 5,
+        thumbnail: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c',
+        progress: 65,
+        dayCount: 6,
         mood: '🤝',
-        timeZone: 'America/New_York', // GMT-5
-        weather: '❄️'
+        timeZone: 'Asia/Dubai', // GST
+        weather: '🔥'
       },
       {
         id: 'trip-4',
-        title: 'Bali Retreat',
-        location: 'Bali, Indonesia',
-        startDate: '2024-03-20',
-        endDate: '2024-03-30',
+        title: 'Kerala Backwaters',
+        location: 'Kerala, India',
+        startDate: '2024-12-20',
+        endDate: '2024-12-28',
         type: 'leisure',
-        thumbnail: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4',
-        progress: 20,
-        dayCount: 10,
+        thumbnail: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944',
+        progress: 10,
+        dayCount: 8,
         mood: '🧘',
-        timeZone: 'Asia/Makassar', // GMT+8
-        weather: '🌤️'
+        timeZone: 'Asia/Kolkata', // IST
+        weather: '🌧️'
+      },
+      {
+        id: 'trip-5',
+        title: 'Tokyo Olympics 2025',
+        location: 'Tokyo, Japan',
+        startDate: '2025-02-10',
+        endDate: '2025-02-17',
+        type: 'adventure',
+        thumbnail: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26',
+        progress: 0, // upcoming trip, not started planning yet
+        dayCount: 7,
+        mood: '🤩',
+        timeZone: 'Asia/Tokyo', // JST
+        weather: '☀️'
+      },
+      {
+        id: 'trip-6',
+        title: 'Himalayan Trek',
+        location: 'Himachal Pradesh, India',
+        startDate: '2025-05-12',
+        endDate: '2025-05-22',
+        type: 'adventure',
+        thumbnail: 'https://images.unsplash.com/photo-1626016752965-1241a7e6cbe3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+        progress: 5,
+        dayCount: 10,
+        mood: '🏔️',
+        timeZone: 'Asia/Kolkata', // IST
+        weather: '❄️'
       }
     ];
     
@@ -265,9 +294,12 @@ const Dashboard = () => {
                   <p className="text-sm opacity-90">{itinerary.location}</p>
                 </div>
                 
-                {/* Trip countdown indicator */}
+                {/* Replace Trip countdown indicator with CountdownTimer */}
                 <div className="absolute top-0 right-0 bg-primary-600 text-white text-sm px-3 py-1 m-2 rounded-full">
-                  {getDaysUntilTrip(itinerary.startDate, itinerary.timeZone)}
+                  <CountdownTimer 
+                    startDate={itinerary.startDate}
+                    timeZone={itinerary.timeZone}
+                  />
                 </div>
                 
                 {/* Weather and mood indicators */}
@@ -303,6 +335,24 @@ const Dashboard = () => {
                   <span>{new Date(itinerary.startDate).toLocaleDateString()} - {new Date(itinerary.endDate).toLocaleDateString()}</span>
                   <span>{itinerary.dayCount} days</span>
                 </div>
+                
+                {/* Add prominent countdown */}
+                {new Date(itinerary.startDate) > new Date() && (
+                  <div className="mb-4 bg-primary-50 dark:bg-primary-900/20 rounded-lg p-3 text-center">
+                    <div className="text-primary-600 dark:text-primary-400 font-medium mb-1">Trip starts in:</div>
+                    <div className="flex justify-center space-x-4">
+                      <div className="flex flex-col items-center">
+                        <div className="text-xl font-bold text-primary-700 dark:text-primary-300">
+                          <CountdownTimer 
+                            startDate={itinerary.startDate}
+                            timeZone={itinerary.timeZone}
+                            showDetailed={true}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {/* Destination time */}
                 <div className="mb-3 text-sm">

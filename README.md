@@ -80,6 +80,3 @@ The build files will be in the `build` directory.
 - Icons and UI inspiration from [Heroicons](https://heroicons.com/) and [Tailwind UI](https://tailwindui.com/)
 - Project inspired by Trello and other Kanban-style boards
 
-## License
-
-MIT License 
