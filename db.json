@@ -1,0 +1,1009 @@
+{
+  "trips": [
+    {
+      "id": "trip-1",
+      "title": "Goa Beach Vacation",
+      "location": "Goa, India",
+      "startDate": "2024-04-05",
+      "endDate": "2024-04-12",
+      "type": "leisure",
+      "tripType": "leisure",
+      "color": "#3B82F6",
+      "thumbnail": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2",
+      "progress": 100,
+      "dayCount": 7,
+      "mood": "😄",
+      "timeZone": "Asia/Kolkata",
+      "weather": "☀️",
+      "description": "A relaxing beach vacation in Goa with plenty of time for swimming and sunbathing."
+    },
+    {
+      "id": "trip-8",
+      "title": "Weekend in Mumbai",
+      "location": "Mumbai, India",
+      "startDate": "2024-05-20",
+      "endDate": "2024-05-22",
+      "type": "leisure",
+      "tripType": "leisure",
+      "color": "#10B981",
+      "thumbnail": "https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7",
+      "progress": 50,
+      "dayCount": 3,
+      "mood": "🌆",
+      "timeZone": "Asia/Kolkata",
+      "weather": "🌤️",
+      "description": "Quick weekend getaway to explore Mumbai's vibrant city life."
+    },
+    {
+      "id": "trip-2",
+      "title": "Rajasthan Heritage Tour",
+      "location": "Jaipur, India",
+      "startDate": "2024-10-15",
+      "endDate": "2024-10-22",
+      "type": "cultural",
+      "tripType": "cultural",
+      "color": "#F59E0B",
+      "thumbnail": "https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "progress": 35,
+      "dayCount": 7,
+      "mood": "🏛️",
+      "timeZone": "Asia/Kolkata",
+      "weather": "🌤️",
+      "description": "Explore the rich cultural heritage of Rajasthan, including historic forts and palaces."
+    },
+    {
+      "id": "trip-3",
+      "title": "Business in Dubai",
+      "location": "Dubai, UAE",
+      "startDate": "2024-07-12",
+      "endDate": "2024-07-18",
+      "type": "business",
+      "tripType": "business",
+      "color": "#8B5CF6",
+      "thumbnail": "https://images.unsplash.com/photo-1512453979798-5ea266f8880c",
+      "progress": 65,
+      "dayCount": 6,
+      "mood": "🤝",
+      "timeZone": "Asia/Dubai",
+      "weather": "🔥",
+      "description": "Business conference and meetings with potential partners in Dubai."
+    },
+    {
+      "id": "trip-4",
+      "title": "Kerala Backwaters",
+      "location": "Kerala, India",
+      "startDate": "2024-12-20",
+      "endDate": "2024-12-28",
+      "type": "leisure",
+      "tripType": "leisure",
+      "color": "#10B981",
+      "thumbnail": "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944",
+      "progress": 10,
+      "dayCount": 8,
+      "mood": "🧘",
+      "timeZone": "Asia/Kolkata",
+      "weather": "🌧️",
+      "description": "Relaxing houseboat tour through the serene backwaters of Kerala."
+    },
+    {
+      "id": "trip-5",
+      "title": "Tokyo Olympics 2025",
+      "location": "Tokyo, Japan",
+      "startDate": "2025-02-10",
+      "endDate": "2025-02-17",
+      "type": "adventure",
+      "tripType": "adventure",
+      "color": "#EF4444",
+      "thumbnail": "https://images.unsplash.com/photo-1503899036084-c55cdd92da26",
+      "progress": 0,
+      "dayCount": 7,
+      "mood": "🤩",
+      "timeZone": "Asia/Tokyo",
+      "weather": "☀️",
+      "description": "Experience the excitement of the Olympics in Tokyo."
+    },
+    {
+      "id": "trip-6",
+      "title": "Himalayan Trek",
+      "location": "Himachal Pradesh, India",
+      "startDate": "2025-05-12",
+      "endDate": "2025-05-22",
+      "type": "adventure",
+      "tripType": "adventure",
+      "color": "#EC4899",
+      "thumbnail": "https://images.unsplash.com/photo-1626016752965-1241a7e6cbe3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "progress": 5,
+      "dayCount": 10,
+      "mood": "🏔️",
+      "timeZone": "Asia/Kolkata",
+      "weather": "❄️",
+      "description": "Challenging trek through the beautiful Himalayan mountains."
+    },
+    {
+      "id": "trip-7",
+      "title": "Maldives Island Getaway",
+      "location": "Malé, Maldives",
+      "startDate": "2024-06-15",
+      "endDate": "2024-06-22",
+      "type": "romantic",
+      "tripType": "romantic",
+      "color": "#EC4899",
+      "thumbnail": "https://images.unsplash.com/photo-1514282401047-d79a71a590e8",
+      "progress": 20,
+      "dayCount": 7,
+      "mood": "😍",
+      "timeZone": "Indian/Maldives",
+      "weather": "☀️",
+      "description": "Romantic getaway with overwater bungalows and pristine beaches."
+    },
+    {
+      "id": "trip-9",
+      "title": "Bali Adventure & Wellness",
+      "location": "Bali, Indonesia",
+      "startDate": "2024-08-15",
+      "endDate": "2024-08-25",
+      "type": "adventure",
+      "tripType": "adventure",
+      "color": "#10B981",
+      "thumbnail": "https://images.unsplash.com/photo-1537996194471-e657df975ab4",
+      "progress": 25,
+      "dayCount": 10,
+      "mood": "🧘",
+      "timeZone": "Asia/Bali",
+      "weather": "☀️",
+      "description": "A perfect blend of adventure and wellness in the heart of Bali. Experience yoga retreats, temple visits, and thrilling water sports.",
+      "createdAt": "2024-03-15T10:00:00.000Z",
+      "lastModified": "2024-03-15T10:00:00.000Z"
+    }
+  ],
+  "activities": [
+    {
+      "id": "activity-1",
+      "content": "Check-in at Casa Britona Resort",
+      "time": "14:00",
+      "date": "2024-04-05",
+      "type": "travel",
+      "location": "Bardez, Goa",
+      "itineraryTitle": "Goa Beach Vacation",
+      "itineraryId": "trip-1",
+      "notes": "Reservation confirmation: #GOA24589"
+    },
+    {
+      "id": "activity-2",
+      "content": "Beach Day at Calangute",
+      "time": "10:00",
+      "date": "2024-04-06",
+      "type": "leisure",
+      "location": "Calangute Beach, Goa",
+      "itineraryTitle": "Goa Beach Vacation",
+      "itineraryId": "trip-1",
+      "notes": "Bring sunscreen and beach towels"
+    },
+    {
+      "id": "activity-3",
+      "content": "Visit Amber Fort",
+      "time": "09:00",
+      "date": "2024-10-16",
+      "type": "attraction",
+      "location": "Amber Fort, Jaipur",
+      "itineraryTitle": "Rajasthan Heritage Tour",
+      "itineraryId": "trip-2",
+      "notes": "Hire a local guide, bring camera"
+    },
+    {
+      "id": "activity-4",
+      "content": "Tech Conference Presentation",
+      "time": "10:30",
+      "date": "2024-07-14",
+      "type": "business",
+      "location": "Dubai World Trade Centre",
+      "itineraryTitle": "Business in Dubai",
+      "itineraryId": "trip-3",
+      "notes": "Final presentation slides review"
+    },
+    {
+      "id": "activity-5",
+      "content": "Houseboat Tour",
+      "time": "09:00",
+      "date": "2024-12-22",
+      "type": "leisure",
+      "location": "Alleppey, Kerala",
+      "itineraryTitle": "Kerala Backwaters",
+      "itineraryId": "trip-4",
+      "notes": "Overnight stay on traditional houseboat"
+    },
+    {
+      "id": "activity-6",
+      "content": "Opening Ceremony Tickets",
+      "time": "18:00",
+      "date": "2025-02-10",
+      "type": "attraction",
+      "location": "Olympic Stadium, Tokyo",
+      "itineraryTitle": "Tokyo Olympics 2025",
+      "itineraryId": "trip-5",
+      "notes": "Need to book tickets 6 months in advance"
+    },
+    {
+      "id": "activity-7",
+      "content": "Trek to Triund",
+      "time": "07:00",
+      "date": "2025-05-14",
+      "type": "adventure",
+      "location": "Dharamshala, Himachal Pradesh",
+      "itineraryTitle": "Himalayan Trek",
+      "itineraryId": "trip-6",
+      "notes": "Moderate difficulty, 6 hours approx."
+    },
+    {
+      "id": "activity-8",
+      "content": "Check-in at Taj Hotel",
+      "time": "15:00",
+      "date": "2024-05-20",
+      "type": "travel",
+      "location": "Colaba, Mumbai",
+      "itineraryTitle": "Weekend in Mumbai",
+      "itineraryId": "trip-8",
+      "notes": "Confirmation #MUM12345"
+    },
+    {
+      "id": "activity-9",
+      "content": "Gateway of India Tour",
+      "time": "10:00",
+      "date": "2024-05-21",
+      "type": "attraction",
+      "location": "Apollo Bunder, Mumbai",
+      "itineraryTitle": "Weekend in Mumbai",
+      "itineraryId": "trip-8",
+      "notes": "Book a local guide"
+    },
+    {
+      "id": "activity-10",
+      "content": "Check-in at Overwater Villa",
+      "time": "14:00",
+      "date": "2024-06-15",
+      "type": "travel",
+      "location": "North Malé Atoll, Maldives",
+      "itineraryTitle": "Maldives Island Getaway",
+      "itineraryId": "trip-7",
+      "notes": "Reservation #MAL9876"
+    },
+    {
+      "id": "activity-11",
+      "content": "Arrival at Ngurah Rai International Airport",
+      "time": "14:00",
+      "date": "2024-08-15",
+      "type": "travel",
+      "location": "Denpasar, Bali",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Airport pickup arranged by hotel"
+    },
+    {
+      "id": "activity-12",
+      "content": "Morning Yoga Session",
+      "time": "07:00",
+      "date": "2024-08-16",
+      "type": "leisure",
+      "location": "Ubud Yoga Center",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Bring yoga mat and water bottle"
+    },
+    {
+      "id": "activity-13",
+      "content": "Visit Uluwatu Temple",
+      "time": "16:00",
+      "date": "2024-08-16",
+      "type": "attraction",
+      "location": "Uluwatu Temple, Bali",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Dress code: Sarong required, shoulders covered"
+    },
+    {
+      "id": "activity-14",
+      "content": "White Water Rafting",
+      "time": "09:00",
+      "date": "2024-08-17",
+      "type": "adventure",
+      "location": "Ayung River, Ubud",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Bring change of clothes and waterproof camera"
+    },
+    {
+      "id": "activity-15",
+      "content": "Balinese Cooking Class",
+      "time": "11:00",
+      "date": "2024-08-18",
+      "type": "leisure",
+      "location": "Cooking School Ubud",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Includes market tour and recipe book"
+    },
+    {
+      "id": "activity-16",
+      "content": "Sunrise Trek to Mount Batur",
+      "time": "02:00",
+      "date": "2024-08-19",
+      "type": "adventure",
+      "location": "Mount Batur, Kintamani",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Early morning pickup at 2 AM. Bring hiking shoes, warm clothes, and headlamp. Breakfast included at the summit."
+    },
+    {
+      "id": "activity-17",
+      "content": "Spa & Massage Treatment",
+      "time": "14:00",
+      "date": "2024-08-19",
+      "type": "leisure",
+      "location": "Ubud Spa Retreat",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Traditional Balinese massage and flower bath. Duration: 2 hours. Pre-booked appointment."
+    },
+    {
+      "id": "activity-18",
+      "content": "Visit Sacred Monkey Forest",
+      "time": "09:00",
+      "date": "2024-08-20",
+      "type": "attraction",
+      "location": "Ubud Monkey Forest",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Entry fee: IDR 80,000. Keep belongings secure from monkeys. No food allowed inside."
+    },
+    {
+      "id": "activity-19",
+      "content": "Tegallalang Rice Terrace Tour",
+      "time": "11:00",
+      "date": "2024-08-20",
+      "type": "attraction",
+      "location": "Tegallalang Rice Terraces",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Optional swing experience available. Bring hat and sunscreen. Local guide included."
+    },
+    {
+      "id": "activity-20",
+      "content": "Snorkeling at Blue Lagoon",
+      "time": "08:00",
+      "date": "2024-08-21",
+      "type": "adventure",
+      "location": "Blue Lagoon, Padangbai",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Equipment provided. Bring swimsuit and towel. Lunch included. Duration: 6 hours."
+    },
+    {
+      "id": "activity-21",
+      "content": "Sunset Dinner at Jimbaran Beach",
+      "time": "17:30",
+      "date": "2024-08-21",
+      "type": "leisure",
+      "location": "Jimbaran Beach",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Fresh seafood dinner. Reservation confirmed. Table with ocean view."
+    },
+    {
+      "id": "activity-22",
+      "content": "Visit Tirta Empul Temple",
+      "time": "08:00",
+      "date": "2024-08-22",
+      "type": "attraction",
+      "location": "Tirta Empul Temple",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Holy water purification ritual. Bring sarong and change of clothes. Local guide included."
+    },
+    {
+      "id": "activity-23",
+      "content": "Traditional Dance Performance",
+      "time": "19:00",
+      "date": "2024-08-22",
+      "type": "cultural",
+      "location": "Ubud Palace",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Kecak Fire Dance. Tickets booked. Duration: 1 hour. Photography allowed."
+    },
+    {
+      "id": "activity-24",
+      "content": "Visit Tegenungan Waterfall",
+      "time": "10:00",
+      "date": "2024-08-23",
+      "type": "attraction",
+      "location": "Tegenungan Waterfall",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Entry fee: IDR 20,000. Bring swimsuit and water shoes. Stairs to climb."
+    },
+    {
+      "id": "activity-25",
+      "content": "Departure from Bali",
+      "time": "12:00",
+      "date": "2024-08-25",
+      "type": "travel",
+      "location": "Ngurah Rai International Airport",
+      "itineraryTitle": "Bali Adventure & Wellness",
+      "itineraryId": "trip-9",
+      "notes": "Hotel checkout at 11 AM. Airport transfer arranged. Flight: GA 715"
+    },
+    {
+      "id": "activity-26",
+      "content": "Dudhsagar Falls Day Trip",
+      "time": "08:00",
+      "date": "2024-04-07",
+      "type": "attraction",
+      "location": "Dudhsagar Falls, Goa",
+      "itineraryTitle": "Goa Beach Vacation",
+      "itineraryId": "trip-1",
+      "notes": "Jeep safari included. Bring swimsuit and water shoes. Packed lunch provided."
+    },
+    {
+      "id": "activity-27",
+      "content": "Spice Plantation Tour",
+      "time": "10:00",
+      "date": "2024-04-08",
+      "type": "attraction",
+      "location": "Sahakari Spice Farm, Ponda",
+      "itineraryTitle": "Goa Beach Vacation",
+      "itineraryId": "trip-1",
+      "notes": "Traditional Goan lunch included. Guided tour with spice tasting."
+    },
+    {
+      "id": "activity-28",
+      "content": "Water Sports at Baga Beach",
+      "time": "09:00",
+      "date": "2024-04-09",
+      "type": "adventure",
+      "location": "Baga Beach, Goa",
+      "itineraryTitle": "Goa Beach Vacation",
+      "itineraryId": "trip-1",
+      "notes": "Parasailing, jet skiing, and banana boat ride. Safety equipment provided."
+    },
+    {
+      "id": "activity-29",
+      "content": "Old Goa Churches Tour",
+      "time": "11:00",
+      "date": "2024-04-10",
+      "type": "attraction",
+      "location": "Old Goa",
+      "itineraryTitle": "Goa Beach Vacation",
+      "itineraryId": "trip-1",
+      "notes": "Visit Basilica of Bom Jesus and Se Cathedral. Dress code: Covered shoulders and knees."
+    },
+    {
+      "id": "activity-30",
+      "content": "Sunset Cruise on Mandovi River",
+      "time": "17:00",
+      "date": "2024-04-11",
+      "type": "leisure",
+      "location": "Panaji, Goa",
+      "itineraryTitle": "Goa Beach Vacation",
+      "itineraryId": "trip-1",
+      "notes": "Dinner cruise with live music. Reservation confirmed. Duration: 2 hours."
+    },
+    {
+      "id": "activity-31",
+      "content": "Visit City Palace",
+      "time": "10:00",
+      "date": "2024-10-15",
+      "type": "attraction",
+      "location": "City Palace, Jaipur",
+      "itineraryTitle": "Rajasthan Heritage Tour",
+      "itineraryId": "trip-2",
+      "notes": "Entry fee: INR 500. Audio guide available. Photography allowed."
+    },
+    {
+      "id": "activity-32",
+      "content": "Hawa Mahal Visit",
+      "time": "14:00",
+      "date": "2024-10-15",
+      "type": "attraction",
+      "location": "Hawa Mahal, Jaipur",
+      "itineraryTitle": "Rajasthan Heritage Tour",
+      "itineraryId": "trip-2",
+      "notes": "Best photography time: Early morning. Entry fee: INR 200."
+    },
+    {
+      "id": "activity-33",
+      "content": "Elephant Ride at Amber Fort",
+      "time": "08:00",
+      "date": "2024-10-16",
+      "type": "attraction",
+      "location": "Amber Fort, Jaipur",
+      "itineraryTitle": "Rajasthan Heritage Tour",
+      "itineraryId": "trip-2",
+      "notes": "Booked in advance. Duration: 30 minutes. Bring cash for tips."
+    },
+    {
+      "id": "activity-34",
+      "content": "Jantar Mantar Observatory",
+      "time": "11:00",
+      "date": "2024-10-17",
+      "type": "attraction",
+      "location": "Jantar Mantar, Jaipur",
+      "itineraryTitle": "Rajasthan Heritage Tour",
+      "itineraryId": "trip-2",
+      "notes": "Guided tour included. Entry fee: INR 300. Best time: Morning."
+    },
+    {
+      "id": "activity-35",
+      "content": "Traditional Rajasthani Dinner",
+      "time": "19:00",
+      "date": "2024-10-17",
+      "type": "leisure",
+      "location": "Chokhi Dhani, Jaipur",
+      "itineraryTitle": "Rajasthan Heritage Tour",
+      "itineraryId": "trip-2",
+      "notes": "Cultural show included. Reservation confirmed. Traditional dress optional."
+    },
+    {
+      "id": "activity-36",
+      "content": "Arrival at Dubai International Airport",
+      "time": "15:00",
+      "date": "2024-07-12",
+      "type": "travel",
+      "location": "Dubai International Airport",
+      "itineraryTitle": "Business in Dubai",
+      "itineraryId": "trip-3",
+      "notes": "Airport pickup arranged by hotel. Check-in at 3 PM."
+    },
+    {
+      "id": "activity-37",
+      "content": "Welcome Dinner with Clients",
+      "time": "19:00",
+      "date": "2024-07-12",
+      "type": "business",
+      "location": "At.mosphere, Burj Khalifa",
+      "itineraryTitle": "Business in Dubai",
+      "itineraryId": "trip-3",
+      "notes": "Reservation confirmed. Business casual attire. Table for 6."
+    },
+    {
+      "id": "activity-38",
+      "content": "Morning Team Meeting",
+      "time": "09:00",
+      "date": "2024-07-13",
+      "type": "business",
+      "location": "Dubai World Trade Centre",
+      "itineraryTitle": "Business in Dubai",
+      "itineraryId": "trip-3",
+      "notes": "Conference Room 302. Projector and coffee service arranged."
+    },
+    {
+      "id": "activity-39",
+      "content": "Burj Khalifa Visit",
+      "time": "16:00",
+      "date": "2024-07-13",
+      "type": "attraction",
+      "location": "Burj Khalifa",
+      "itineraryTitle": "Business in Dubai",
+      "itineraryId": "trip-3",
+      "notes": "Tickets booked for At The Top observation deck. Sunset timing."
+    },
+    {
+      "id": "activity-40",
+      "content": "Desert Safari Experience",
+      "time": "15:00",
+      "date": "2024-07-15",
+      "type": "leisure",
+      "location": "Dubai Desert Conservation Reserve",
+      "itineraryTitle": "Business in Dubai",
+      "itineraryId": "trip-3",
+      "notes": "Includes dinner and entertainment. Pickup from hotel at 3 PM."
+    },
+    {
+      "id": "activity-41",
+      "content": "Arrival in Kochi",
+      "time": "14:00",
+      "date": "2024-12-20",
+      "type": "travel",
+      "location": "Cochin International Airport",
+      "itineraryTitle": "Kerala Backwaters",
+      "itineraryId": "trip-4",
+      "notes": "Airport pickup arranged. Transfer to hotel in Fort Kochi."
+    },
+    {
+      "id": "activity-42",
+      "content": "Chinese Fishing Nets",
+      "time": "17:00",
+      "date": "2024-12-20",
+      "type": "attraction",
+      "location": "Fort Kochi Beach",
+      "itineraryTitle": "Kerala Backwaters",
+      "itineraryId": "trip-4",
+      "notes": "Sunset photography opportunity. Local guide included."
+    },
+    {
+      "id": "activity-43",
+      "content": "Kathakali Dance Performance",
+      "time": "18:30",
+      "date": "2024-12-21",
+      "type": "cultural",
+      "location": "Kerala Kathakali Centre",
+      "itineraryTitle": "Kerala Backwaters",
+      "itineraryId": "trip-4",
+      "notes": "Traditional makeup demonstration included. Duration: 2 hours."
+    },
+    {
+      "id": "activity-44",
+      "content": "Spice Plantation Tour",
+      "time": "09:00",
+      "date": "2024-12-23",
+      "type": "attraction",
+      "location": "Kumarakom Spice Plantation",
+      "itineraryTitle": "Kerala Backwaters",
+      "itineraryId": "trip-4",
+      "notes": "Guided tour with spice tasting. Traditional lunch included."
+    },
+    {
+      "id": "activity-45",
+      "content": "Ayurvedic Massage",
+      "time": "14:00",
+      "date": "2024-12-24",
+      "type": "leisure",
+      "location": "Ayurveda Resort, Kumarakom",
+      "itineraryTitle": "Kerala Backwaters",
+      "itineraryId": "trip-4",
+      "notes": "Traditional treatment. Duration: 2 hours. Pre-booked appointment."
+    }
+  ],
+  "days": {
+    "day-1": {
+      "id": "day-1",
+      "title": "Day 1 - Arrival",
+      "date": "2024-04-05",
+      "tripId": "trip-1",
+      "activityIds": [
+        "activity-1"
+      ]
+    },
+    "day-2": {
+      "id": "day-2",
+      "title": "Day 2 - Beach Day",
+      "date": "2024-04-06",
+      "tripId": "trip-1",
+      "activityIds": [
+        "activity-2"
+      ]
+    },
+    "day-3": {
+      "id": "day-3",
+      "title": "Day 1 - Amber Fort",
+      "date": "2024-10-16",
+      "tripId": "trip-2",
+      "activityIds": [
+        "activity-3"
+      ]
+    },
+    "day-4": {
+      "id": "day-4",
+      "title": "Day 3 - Conference",
+      "date": "2024-07-14",
+      "tripId": "trip-3",
+      "activityIds": [
+        "activity-4"
+      ]
+    },
+    "day-5": {
+      "id": "day-5",
+      "title": "Day 3 - Houseboat",
+      "date": "2024-12-22",
+      "tripId": "trip-4",
+      "activityIds": [
+        "activity-5"
+      ]
+    },
+    "day-6": {
+      "id": "day-6",
+      "title": "Day 1 - Opening Ceremony",
+      "date": "2025-02-10",
+      "tripId": "trip-5",
+      "activityIds": [
+        "activity-6"
+      ]
+    },
+    "day-7": {
+      "id": "day-7",
+      "title": "Day 3 - Trek",
+      "date": "2025-05-14",
+      "tripId": "trip-6",
+      "activityIds": [
+        "activity-7"
+      ]
+    },
+    "day-8": {
+      "id": "day-8",
+      "title": "Day 1 - Arrival in Mumbai",
+      "date": "2024-05-20",
+      "tripId": "trip-8",
+      "activityIds": [
+        "activity-8",
+        "activity-9"
+      ]
+    },
+    "day-9": {
+      "id": "day-9",
+      "title": "Day 2 - City Exploration",
+      "date": "2024-05-21",
+      "tripId": "trip-8",
+      "activityIds": []
+    },
+    "day-10": {
+      "id": "day-10",
+      "title": "Day 3 - Departure",
+      "date": "2024-05-22",
+      "tripId": "trip-8",
+      "activityIds": []
+    },
+    "day-11": {
+      "id": "day-11",
+      "title": "Day 1 - Arrival in Maldives",
+      "date": "2024-06-15",
+      "tripId": "trip-7",
+      "activityIds": [
+        "activity-10"
+      ]
+    },
+    "day-12": {
+      "id": "day-12",
+      "title": "Day 2 - Beach Day",
+      "date": "2024-06-16",
+      "tripId": "trip-7",
+      "activityIds": []
+    },
+    "day-13": {
+      "id": "day-13",
+      "title": "Day 1 - Arrival in Bali",
+      "date": "2024-08-15",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-11"
+      ]
+    },
+    "day-14": {
+      "id": "day-14",
+      "title": "Day 2 - Yoga & Temple Visit",
+      "date": "2024-08-16",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-12",
+        "activity-13"
+      ]
+    },
+    "day-15": {
+      "id": "day-15",
+      "title": "Day 3 - Adventure Day",
+      "date": "2024-08-17",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-14"
+      ]
+    },
+    "day-16": {
+      "id": "day-16",
+      "title": "Day 4 - Cultural Experience",
+      "date": "2024-08-18",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-15"
+      ]
+    },
+    "day-17": {
+      "id": "day-17",
+      "title": "Day 5 - Adventure & Relaxation",
+      "date": "2024-08-19",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-16",
+        "activity-17"
+      ]
+    },
+    "day-18": {
+      "id": "day-18",
+      "title": "Day 6 - Nature & Culture",
+      "date": "2024-08-20",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-18",
+        "activity-19"
+      ]
+    },
+    "day-19": {
+      "id": "day-19",
+      "title": "Day 7 - Marine Adventure",
+      "date": "2024-08-21",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-20",
+        "activity-21"
+      ]
+    },
+    "day-20": {
+      "id": "day-20",
+      "title": "Day 8 - Spiritual Experience",
+      "date": "2024-08-22",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-22",
+        "activity-23"
+      ]
+    },
+    "day-21": {
+      "id": "day-21",
+      "title": "Day 9 - Waterfall Visit",
+      "date": "2024-08-23",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-24"
+      ]
+    },
+    "day-22": {
+      "id": "day-22",
+      "title": "Day 10 - Departure",
+      "date": "2024-08-25",
+      "tripId": "trip-9",
+      "activityIds": [
+        "activity-25"
+      ]
+    },
+    "day-23": {
+      "id": "day-23",
+      "title": "Day 3 - Waterfall Adventure",
+      "date": "2024-04-07",
+      "tripId": "trip-1",
+      "activityIds": [
+        "activity-26"
+      ]
+    },
+    "day-24": {
+      "id": "day-24",
+      "title": "Day 4 - Cultural Experience",
+      "date": "2024-04-08",
+      "tripId": "trip-1",
+      "activityIds": [
+        "activity-27"
+      ]
+    },
+    "day-25": {
+      "id": "day-25",
+      "title": "Day 5 - Beach Activities",
+      "date": "2024-04-09",
+      "tripId": "trip-1",
+      "activityIds": [
+        "activity-28"
+      ]
+    },
+    "day-26": {
+      "id": "day-26",
+      "title": "Day 6 - Historical Tour",
+      "date": "2024-04-10",
+      "tripId": "trip-1",
+      "activityIds": [
+        "activity-29"
+      ]
+    },
+    "day-27": {
+      "id": "day-27",
+      "title": "Day 7 - River Cruise",
+      "date": "2024-04-11",
+      "tripId": "trip-1",
+      "activityIds": [
+        "activity-30"
+      ]
+    },
+    "day-28": {
+      "id": "day-28",
+      "title": "Day 1 - Palace Tour",
+      "date": "2024-10-15",
+      "tripId": "trip-2",
+      "activityIds": [
+        "activity-31",
+        "activity-32"
+      ]
+    },
+    "day-29": {
+      "id": "day-29",
+      "title": "Day 2 - Fort Visit",
+      "date": "2024-10-16",
+      "tripId": "trip-2",
+      "activityIds": [
+        "activity-33"
+      ]
+    },
+    "day-30": {
+      "id": "day-30",
+      "title": "Day 3 - Cultural Experience",
+      "date": "2024-10-17",
+      "tripId": "trip-2",
+      "activityIds": [
+        "activity-34",
+        "activity-35"
+      ]
+    },
+    "day-31": {
+      "id": "day-31",
+      "title": "Day 1 - Arrival in Dubai",
+      "date": "2024-07-12",
+      "tripId": "trip-3",
+      "activityIds": [
+        "activity-36",
+        "activity-37"
+      ]
+    },
+    "day-32": {
+      "id": "day-32",
+      "title": "Day 2 - Business & Leisure",
+      "date": "2024-07-13",
+      "tripId": "trip-3",
+      "activityIds": [
+        "activity-38",
+        "activity-39"
+      ]
+    },
+    "day-33": {
+      "id": "day-33",
+      "title": "Day 4 - Desert Adventure",
+      "date": "2024-07-15",
+      "tripId": "trip-3",
+      "activityIds": [
+        "activity-40"
+      ]
+    },
+    "day-34": {
+      "id": "day-34",
+      "title": "Day 1 - Arrival in Kerala",
+      "date": "2024-12-20",
+      "tripId": "trip-4",
+      "activityIds": [
+        "activity-41",
+        "activity-42"
+      ]
+    },
+    "day-35": {
+      "id": "day-35",
+      "title": "Day 2 - Cultural Experience",
+      "date": "2024-12-21",
+      "tripId": "trip-4",
+      "activityIds": [
+        "activity-43"
+      ]
+    },
+    "day-36": {
+      "id": "day-36",
+      "title": "Day 4 - Spice Tour",
+      "date": "2024-12-23",
+      "tripId": "trip-4",
+      "activityIds": [
+        "activity-44"
+      ]
+    },
+    "day-37": {
+      "id": "day-37",
+      "title": "Day 5 - Wellness Day",
+      "date": "2024-12-24",
+      "tripId": "trip-4",
+      "activityIds": [
+        "activity-45"
+      ]
+    }
+  },
+  "users": [
+    {
+      "id": "user-1",
+      "username": "traveler",
+      "email": "traveler@example.com",
+      "name": "Travel Enthusiast",
+      "preferences": {
+        "currency": "INR",
+        "timeFormat": "24h",
+        "theme": "light"
+      }
+    }
+  ]
+}

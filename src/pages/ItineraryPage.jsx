@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import BackgroundSlider from '../components/BackgroundSlider';
 import { useTheme } from '../contexts/ThemeContext';
 import { useBackground } from '../contexts/BackgroundContext';
+import api from '../services/api';
+import NewActivityForm from '../components/NewActivityForm';
 
 const ItineraryPage = () => {
   const { tripId } = useParams();
@@ -14,157 +16,243 @@ const ItineraryPage = () => {
   const { backgroundImages } = useBackground();
   const [itineraryData, setItineraryData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [destinationTimeZone, setDestinationTimeZone] = useState('UTC');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedDayId, setSelectedDayId] = useState(null);
+  const [isNewTrip, setIsNewTrip] = useState(false);
   
-  // Simulated data loading
+  // Fetch trip data from API
   useEffect(() => {
-    // In a real app, you would fetch the specific itinerary data based on the ID
-    setTimeout(() => {
-      setItineraryData({
-        id: tripId,
-        title: 'Tokyo Adventure',
-        startDate: '2023-12-15',
-        endDate: '2023-12-25',
-        location: 'Tokyo, Japan',
-        days: {
-          'day-1': {
-            id: 'day-1',
-            title: 'Day 1 - Arrival',
-            activityIds: ['activity-1', 'activity-2', 'activity-3']
-          },
-          'day-2': {
-            id: 'day-2',
-            title: 'Day 2 - Exploration',
-            activityIds: ['activity-4', 'activity-5']
-          },
-          'day-3': {
-            id: 'day-3',
-            title: 'Day 3 - Cultural Day',
-            activityIds: ['activity-6', 'activity-7']
-          }
-        },
-        dayOrder: ['day-1', 'day-2', 'day-3'],
-        activities: {
-          'activity-1': {
-            id: 'activity-1',
-            content: 'Check-in at Hotel',
-            time: '14:00',
-            type: 'travel',
-            location: 'Tokyo Marriott',
-            notes: 'Reservation confirmation: #12345'
-          },
-          'activity-2': {
-            id: 'activity-2',
-            content: 'Lunch at Sushi Restaurant',
-            time: '12:30',
-            type: 'meal',
-            location: 'Tsukiji Market',
-            notes: 'Try the tuna sashimi'
-          },
-          'activity-3': {
-            id: 'activity-3',
-            content: 'Rest at Hotel',
-            time: '16:00',
-            type: 'leisure',
-            location: 'Tokyo Marriott',
-            notes: 'Jet lag recovery'
-          },
-          'activity-4': {
-            id: 'activity-4',
-            content: 'Visit Tokyo Tower',
-            time: '10:00',
-            type: 'attraction',
-            location: 'Tokyo Tower',
-            notes: 'Buy tickets in advance for the observation deck'
-          },
-          'activity-5': {
-            id: 'activity-5',
-            content: 'Dinner at Izakaya',
-            time: '19:00',
-            type: 'meal',
-            location: 'Shinjuku area',
-            notes: 'Try local beer and yakitori'
-          },
-          'activity-6': {
-            id: 'activity-6',
-            content: 'Visit Meiji Shrine',
-            time: '09:00',
-            type: 'attraction',
-            location: 'Meiji Shrine, Shibuya',
-            notes: 'Peaceful morning walk through the shrine grounds'
-          },
-          'activity-7': {
-            id: 'activity-7',
-            content: 'Shopping in Harajuku',
-            time: '13:00',
-            type: 'leisure',
-            location: 'Takeshita Street, Harajuku',
-            notes: 'Check out the fashion boutiques and quirky cafes'
-          }
+    const fetchTripData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch the trip
+        const trip = await api.trips.getTripById(tripId);
+        if (!trip) {
+          setError(`Trip with ID ${tripId} not found`);
+          setLoading(false);
+          return;
         }
-      });
-      setDestinationTimeZone('Asia/Tokyo');
-      setLoading(false);
-    }, 1000);
+        
+        // Check if this is a new trip (created within the last minute)
+        const tripCreationTime = new Date(trip.createdAt);
+        const now = new Date();
+        const isNew = (now - tripCreationTime) < 60000; // 60000ms = 1 minute
+        setIsNewTrip(isNew);
+        
+        // Set time zone from trip data
+        setDestinationTimeZone(trip.timeZone || 'UTC');
+        
+        // Fetch days for this trip
+        const daysData = await api.days.getDaysByTripId(tripId);
+        
+        // Fetch activities for this trip
+        const activitiesData = await api.activities.getActivitiesByTripId(tripId);
+        
+        // Transform the data into the structure needed by ItineraryBoard
+        const days = {};
+        const dayOrder = [];
+        const activities = {};
+        
+        // Organize days
+        daysData.forEach(day => {
+          days[day.id] = {
+            id: day.id,
+            title: day.title,
+            activityIds: day.activityIds || []
+          };
+          dayOrder.push(day.id);
+        });
+        
+        // Sort dayOrder by date if needed
+        dayOrder.sort((a, b) => {
+          const dateA = new Date(days[a].date || '');
+          const dateB = new Date(days[b].date || '');
+          return dateA - dateB;
+        });
+        
+        // Organize activities
+        activitiesData.forEach(activity => {
+          activities[activity.id] = {
+            id: activity.id,
+            content: activity.content,
+            time: activity.time,
+            type: activity.type,
+            location: activity.location,
+            notes: activity.notes
+          };
+        });
+        
+        // Create the final data structure
+        setItineraryData({
+          ...trip,
+          days,
+          dayOrder,
+          activities
+        });
+        
+        // If this is a new trip, open the Add Activity modal for the first day
+        if (isNew && daysData.length > 0) {
+          setSelectedDayId(daysData[0].id);
+          setIsModalOpen(true);
+        }
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching trip data:', err);
+        setError('Failed to load trip data. Please try again later.');
+        setLoading(false);
+      }
+    };
+    
+    fetchTripData();
   }, [tripId]);
   
   const handleDragEnd = (result) => {
     // Implement drag handling logic for activities and days
     console.log('Drag ended:', result);
     // In a real app, you would update the state based on the drag result
+    // and then save changes to the API
   };
   
-  const removeDay = (dayId) => {
+  const removeDay = async (dayId) => {
     if (!itineraryData) return;
     
-    const newDayOrder = itineraryData.dayOrder.filter(id => id !== dayId);
-    const newDays = { ...itineraryData.days };
-    delete newDays[dayId];
-    
-    // Update the state
-    setItineraryData({
-      ...itineraryData,
-      days: newDays,
-      dayOrder: newDayOrder
-    });
+    try {
+      // Delete the day from the API
+      await api.days.deleteDay(dayId);
+      
+      // Update local state
+      const newDayOrder = itineraryData.dayOrder.filter(id => id !== dayId);
+      const newDays = { ...itineraryData.days };
+      delete newDays[dayId];
+      
+      // Update the state
+      setItineraryData({
+        ...itineraryData,
+        days: newDays,
+        dayOrder: newDayOrder
+      });
+    } catch (err) {
+      console.error('Error removing day:', err);
+      // Handle error (show notification, etc.)
+    }
   };
   
-  const editDayTitle = (dayId, newTitle) => {
+  const editDayTitle = async (dayId, newTitle) => {
     if (!itineraryData) return;
     
-    setItineraryData({
-      ...itineraryData,
-      days: {
-        ...itineraryData.days,
-        [dayId]: {
-          ...itineraryData.days[dayId],
-          title: newTitle
+    try {
+      const updatedDay = {
+        ...itineraryData.days[dayId],
+        title: newTitle
+      };
+      
+      // Update the day in the API
+      await api.days.updateDay(dayId, updatedDay);
+      
+      // Update local state
+      setItineraryData({
+        ...itineraryData,
+        days: {
+          ...itineraryData.days,
+          [dayId]: {
+            ...itineraryData.days[dayId],
+            title: newTitle
+          }
         }
-      }
-    });
+      });
+    } catch (err) {
+      console.error('Error updating day title:', err);
+      // Handle error (show notification, etc.)
+    }
   };
   
   const openAddActivityModal = (dayId) => {
-    // Implement modal opening logic
-    console.log('Open activity modal for day:', dayId);
+    setSelectedDayId(dayId);
+    setIsModalOpen(true);
   };
   
-  const removeActivity = (activityId, dayId) => {
+  const addActivity = async (activityData) => {
+    if (!itineraryData || !selectedDayId) return;
+    
+    try {
+      // Create the new activity
+      const newActivity = await api.activities.createActivity({
+        ...activityData,
+        itineraryId: tripId,
+        date: itineraryData.days[selectedDayId].date
+      });
+      
+      // Update the day to include the new activity
+      const day = itineraryData.days[selectedDayId];
+      const updatedDay = {
+        ...day,
+        activityIds: [...day.activityIds, newActivity.id]
+      };
+      
+      await api.days.updateDay(selectedDayId, updatedDay);
+      
+      // Update local state
+      setItineraryData({
+        ...itineraryData,
+        activities: {
+          ...itineraryData.activities,
+          [newActivity.id]: newActivity
+        },
+        days: {
+          ...itineraryData.days,
+          [selectedDayId]: updatedDay
+        }
+      });
+      
+      setIsModalOpen(false);
+      setSelectedDayId(null);
+    } catch (err) {
+      console.error('Error adding activity:', err);
+      // Handle error (show notification, etc.)
+    }
+  };
+  
+  const removeActivity = async (activityId, dayId) => {
     if (!itineraryData) return;
     
-    const day = itineraryData.days[dayId];
-    const newActivityIds = day.activityIds.filter(id => id !== activityId);
-    
-    setItineraryData({
-      ...itineraryData,
-      days: {
-        ...itineraryData.days,
-        [dayId]: {
-          ...day,
-          activityIds: newActivityIds
+    try {
+      // First update the day to remove the activity reference
+      const day = itineraryData.days[dayId];
+      const newActivityIds = day.activityIds.filter(id => id !== activityId);
+      
+      const updatedDay = {
+        ...day,
+        activityIds: newActivityIds
+      };
+      
+      await api.days.updateDay(dayId, updatedDay);
+      
+      // Then delete the activity itself
+      await api.activities.deleteActivity(activityId);
+      
+      // Update local state
+      const newActivities = { ...itineraryData.activities };
+      delete newActivities[activityId];
+      
+      setItineraryData({
+        ...itineraryData,
+        activities: newActivities,
+        days: {
+          ...itineraryData.days,
+          [dayId]: {
+            ...day,
+            activityIds: newActivityIds
+          }
         }
-      }
-    });
+      });
+    } catch (err) {
+      console.error('Error removing activity:', err);
+      // Handle error (show notification, etc.)
+    }
   };
   
   return (
@@ -195,6 +283,19 @@ const ItineraryPage = () => {
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary-500"></div>
+            </div>
+          ) : error ? (
+            <div className="backdrop-blur-sm bg-white/70 p-6 rounded-xl shadow-lg">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-md">
+                <h3 className="text-lg font-semibold mb-2">Error</h3>
+                <p>{error}</p>
+                <button 
+                  onClick={() => navigate('/dashboard')} 
+                  className="mt-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                >
+                  Return to Dashboard
+                </button>
+              </div>
             </div>
           ) : (
             <>
@@ -248,6 +349,16 @@ const ItineraryPage = () => {
           )}
         </main>
       </div>
+
+      {isModalOpen && (
+        <NewActivityForm
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedDayId(null);
+          }}
+          onAddActivity={addActivity}
+        />
+      )}
     </div>
   );
 };

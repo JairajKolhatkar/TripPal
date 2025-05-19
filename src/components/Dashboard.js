@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import CountdownTimer from './CountdownTimer';
+import api from '../services/api';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -10,98 +11,49 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [filterDate, setFilterDate] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  // Sample data for demonstration purposes
+  // Fetch data from API
   useEffect(() => {
-    const sampleItineraries = [
-      {
-        id: 'trip-1',
-        title: 'Goa Beach Vacation',
-        location: 'Goa, India',
-        startDate: '2024-04-05',
-        endDate: '2024-04-12',
-        type: 'leisure',
-        thumbnail: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2',
-        progress: 100, // 100% complete trip
-        dayCount: 7,
-        mood: '😄',
-        timeZone: 'Asia/Kolkata', // IST
-        weather: '☀️'
-      },
-      {
-        id: 'trip-2',
-        title: 'Rajasthan Heritage Tour',
-        location: 'Jaipur, India',
-        startDate: '2024-10-15',
-        endDate: '2024-10-22',
-        type: 'cultural',
-        thumbnail: 'https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-        progress: 35,
-        dayCount: 7,
-        mood: '🏛️',
-        timeZone: 'Asia/Kolkata', // IST
-        weather: '🌤️'
-      },
-      {
-        id: 'trip-3',
-        title: 'Business in Dubai',
-        location: 'Dubai, UAE',
-        startDate: '2024-07-12',
-        endDate: '2024-07-18',
-        type: 'business',
-        thumbnail: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c',
-        progress: 65,
-        dayCount: 6,
-        mood: '🤝',
-        timeZone: 'Asia/Dubai', // GST
-        weather: '🔥'
-      },
-      {
-        id: 'trip-4',
-        title: 'Kerala Backwaters',
-        location: 'Kerala, India',
-        startDate: '2024-12-20',
-        endDate: '2024-12-28',
-        type: 'leisure',
-        thumbnail: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944',
-        progress: 10,
-        dayCount: 8,
-        mood: '🧘',
-        timeZone: 'Asia/Kolkata', // IST
-        weather: '🌧️'
-      },
-      {
-        id: 'trip-5',
-        title: 'Tokyo Olympics 2025',
-        location: 'Tokyo, Japan',
-        startDate: '2025-02-10',
-        endDate: '2025-02-17',
-        type: 'adventure',
-        thumbnail: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26',
-        progress: 0, // upcoming trip, not started planning yet
-        dayCount: 7,
-        mood: '🤩',
-        timeZone: 'Asia/Tokyo', // JST
-        weather: '☀️'
-      },
-      {
-        id: 'trip-6',
-        title: 'Himalayan Trek',
-        location: 'Himachal Pradesh, India',
-        startDate: '2025-05-12',
-        endDate: '2025-05-22',
-        type: 'adventure',
-        thumbnail: 'https://images.unsplash.com/photo-1626016752965-1241a7e6cbe3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-        progress: 5,
-        dayCount: 10,
-        mood: '🏔️',
-        timeZone: 'Asia/Kolkata', // IST
-        weather: '❄️'
+    const fetchTrips = async () => {
+      try {
+        setLoading(true);
+        const trips = await api.trips.getAllTrips();
+        
+        // Sort trips by startDate (upcoming trips first, chronologically)
+        const sortedTrips = [...trips].sort((a, b) => {
+          const today = new Date();
+          const startDateA = new Date(a.startDate);
+          const startDateB = new Date(b.startDate);
+          
+          // Check if trips are upcoming or past
+          const aIsUpcoming = startDateA > today;
+          const bIsUpcoming = startDateB > today;
+          
+          // If both are upcoming or both are past, sort by date
+          if (aIsUpcoming === bIsUpcoming) {
+            // For upcoming trips, sort from closest to furthest
+            return aIsUpcoming ? 
+              startDateA - startDateB : // Ascending for upcoming trips (closest first)
+              startDateB - startDateA;  // Descending for past trips (most recent first)
+          }
+          
+          // If only one is upcoming, place it first
+          return aIsUpcoming ? -1 : 1;
+        });
+        
+        setItineraries(sortedTrips);
+        setFilteredItineraries(sortedTrips);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching trips:', err);
+        setError('Failed to load trips. Please try again later.');
+        setLoading(false);
       }
-    ];
+    };
     
-    setItineraries(sampleItineraries);
-    setFilteredItineraries(sampleItineraries);
+    fetchTrips();
   }, []);
   
   // Filter itineraries based on search term, filter type, and date
@@ -121,13 +73,16 @@ const Dashboard = () => {
       return matchesSearch && matchesType && matchesDate;
     });
     
+    // Ensure the filtered results maintain the same sorting as the original trips
     setFilteredItineraries(filtered);
   }, [searchTerm, filterType, filterDate, itineraries]);
   
   // Calculate days until trip with time zone adjustment
   const getDaysUntilTrip = (startDate, timeZone) => {
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day
     const tripStart = new Date(startDate);
+    tripStart.setHours(0, 0, 0, 0); // Reset time to start of day
     
     // Time zone adjustment (simplified version)
     try {
@@ -172,22 +127,81 @@ const Dashboard = () => {
   };
 
   // Update mood for a trip
-  const updateMood = (id, newMood) => {
-    const updatedItineraries = itineraries.map(itinerary => 
-      itinerary.id === id ? {...itinerary, mood: newMood} : itinerary
-    );
-    setItineraries(updatedItineraries);
-    
-    // Update filtered itineraries as well
-    setFilteredItineraries(prevFiltered => 
-      prevFiltered.map(itinerary => 
-        itinerary.id === id ? {...itinerary, mood: newMood} : itinerary
-      )
-    );
+  const updateMood = async (id, newMood) => {
+    try {
+      // Get the current trip data
+      const trip = itineraries.find(itinerary => itinerary.id === id);
+      if (!trip) return;
+      
+      // Update the trip with new mood
+      const updatedTrip = { ...trip, mood: newMood };
+      
+      // Save to API
+      await api.trips.updateTrip(id, updatedTrip);
+      
+      // Update local state
+      const updatedItineraries = itineraries.map(itinerary => 
+        itinerary.id === id ? updatedTrip : itinerary
+      );
+      setItineraries(updatedItineraries);
+      
+      // Update filtered itineraries as well
+      setFilteredItineraries(prevFiltered => 
+        prevFiltered.map(itinerary => 
+          itinerary.id === id ? updatedTrip : itinerary
+        )
+      );
+    } catch (err) {
+      console.error('Error updating trip mood:', err);
+    }
+  };
+
+  // Delete trip
+  const deleteTrip = async (id) => {
+    if (window.confirm('Are you sure you want to delete this trip?')) {
+      try {
+        // Delete the trip from the API
+        await api.trips.deleteTrip(id);
+        
+        // Update local state
+        const updatedItineraries = itineraries.filter(itinerary => itinerary.id !== id);
+        setItineraries(updatedItineraries);
+        setFilteredItineraries(updatedItineraries);
+      } catch (err) {
+        console.error('Error deleting trip:', err);
+        alert('Failed to delete trip. Please try again.');
+      }
+    }
   };
   
   // Mood options for the selector
   const moodOptions = ['😄', '😊', '🤩', '😍', '🧘', '❤️', '🤝', '😴', '🏖️', '🗺️', '🌄', '🌃'];
+  
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary-500"></div>
+        </div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+          <p>{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="container mx-auto px-4 py-8">
@@ -236,6 +250,8 @@ const Dashboard = () => {
               <option value="leisure">Leisure</option>
               <option value="business">Business</option>
               <option value="romantic">Romantic</option>
+              <option value="cultural">Cultural</option>
+              <option value="adventure">Adventure</option>
             </select>
           </div>
           
@@ -290,8 +306,29 @@ const Dashboard = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 p-4 text-white">
-                  <h3 className="text-xl font-semibold">{itinerary.title}</h3>
-                  <p className="text-sm opacity-90">{itinerary.location}</p>
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{itinerary.title}</h3>
+                    <div className="flex items-center space-x-2">
+                      <select
+                        value={itinerary.mood}
+                        onChange={(e) => updateMood(itinerary.id, e.target.value)}
+                        className="text-lg bg-transparent border-none focus:ring-0"
+                      >
+                        {moodOptions.map(mood => (
+                          <option key={mood} value={mood}>{mood}</option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={() => deleteTrip(itinerary.id)}
+                        className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50"
+                        title="Delete trip"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 
                 {/* Replace Trip countdown indicator with CountdownTimer */}
@@ -388,6 +425,7 @@ const Dashboard = () => {
                     className="py-2 bg-primary-50 text-primary-700 rounded-md hover:bg-primary-100 transition-colors"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    onClick={() => navigate(`/activities?tripId=${itinerary.id}`)}
                   >
                     Explore
                   </motion.button>

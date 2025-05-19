@@ -87,6 +87,9 @@ const NewActivityForm = ({ onClose, onAddActivity }) => {
     content: '',
     time: '',
     type: 'attraction',
+    location: '',
+    notes: '',
+    duration: '',
   });
 
   const handleChange = (e) => {
@@ -102,9 +105,8 @@ const NewActivityForm = ({ onClose, onAddActivity }) => {
     if (!formData.content.trim()) return;
     
     onAddActivity({
-      content: formData.content,
-      time: formData.time,
-      type: formData.type,
+      ...formData,
+      duration: formData.duration ? parseInt(formData.duration) : null,
     });
   };
 
@@ -240,38 +242,125 @@ const NewActivityForm = ({ onClose, onAddActivity }) => {
                 </svg>
               </div>
               <input
-                type="text"
+                type="time"
                 id="time"
                 name="time"
                 value={formData.time}
                 onChange={handleChange}
                 className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="e.g., 10:00 AM"
+                required
               />
             </div>
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="mb-5">
+            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
               Activity Type
             </label>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
-              {activityTypes.map((type) => (
-                <motion.div 
-                  key={type.id}
-                  className={`cursor-pointer border rounded-md p-3 text-center flex flex-col items-center justify-center space-y-1 ${
-                    formData.type === type.id 
-                      ? `${type.color} border-2 shadow-sm` 
-                      : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                  }`}
-                  onClick={() => setFormData(prev => ({ ...prev, type: type.id }))}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
+            <div className="mt-1">
+              <select
+                id="type"
+                name="type"
+                value={formData.type}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              >
+                {activityTypes.map(type => (
+                  <option key={type.id} value={type.id}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="mb-5">
+            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+              Location
+            </label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-5 w-5 text-gray-400" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
                 >
-                  {type.icon}
-                  <span className="text-sm font-medium">{type.label}</span>
-                </motion.div>
-              ))}
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" 
+                  />
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" 
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder="e.g., Eiffel Tower, Paris"
+              />
+            </div>
+          </div>
+
+          <div className="mb-5">
+            <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
+              Duration (minutes)
+            </label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-5 w-5 text-gray-400" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
+                  />
+                </svg>
+              </div>
+              <input
+                type="number"
+                id="duration"
+                name="duration"
+                value={formData.duration}
+                onChange={handleChange}
+                className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder="e.g., 120"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <div className="mb-5">
+            <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+              Notes
+            </label>
+            <div className="mt-1">
+              <textarea
+                id="notes"
+                name="notes"
+                value={formData.notes}
+                onChange={handleChange}
+                rows="3"
+                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder="Add any additional notes or details..."
+              ></textarea>
             </div>
           </div>
 
@@ -279,33 +368,20 @@ const NewActivityForm = ({ onClose, onAddActivity }) => {
             <motion.button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition duration-200"
-              whileHover={{ scale: 1.02, backgroundColor: "#F9FAFB" }}
+              className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               Cancel
             </motion.button>
+            
             <motion.button
               type="submit"
-              className="px-4 py-2 bg-primary-600 text-white rounded-md shadow-sm"
-              whileHover={{ scale: 1.02, backgroundColor: "#0284c7" }}
+              className="px-4 py-2 text-white bg-primary-600 rounded-md hover:bg-primary-700 transition-colors"
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <div className="flex items-center">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 mr-1" 
-                  viewBox="0 0 20 20" 
-                  fill="currentColor"
-                >
-                  <path 
-                    fillRule="evenodd" 
-                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" 
-                    clipRule="evenodd" 
-                  />
-                </svg>
-                Add Activity
-              </div>
+              Add Activity
             </motion.button>
           </div>
         </form>

@@ -6,6 +6,7 @@ import CountdownTimer from '../components/CountdownTimer';
 import BackgroundSlider from '../components/BackgroundSlider';
 import { useTheme } from '../contexts/ThemeContext';
 import { useBackground } from '../contexts/BackgroundContext';
+import api from '../services/api';
 
 const NewTripPage = () => {
   const navigate = useNavigate();
@@ -35,12 +36,12 @@ const NewTripPage = () => {
     { value: 'America/Los_Angeles', label: 'Pacific Time (PT) - Los Angeles' },
     { value: 'Europe/London', label: 'Greenwich Mean Time (GMT) - London' },
     { value: 'Europe/Paris', label: 'Central European Time (CET) - Paris' },
-    // Indian time zones
+    // Indian time zones - all share the same time zone but need unique keys
     { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - New Delhi' },
-    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Mumbai' },
-    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Kolkata' },
-    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Chennai' },
-    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Bangalore' },
+    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Mumbai', key: 'Mumbai' },
+    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Kolkata', key: 'Kolkata' },
+    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Chennai', key: 'Chennai' },
+    { value: 'Asia/Kolkata', label: 'Indian Standard Time (IST) - Bangalore', key: 'Bangalore' },
     // Other Asian time zones
     { value: 'Asia/Tokyo', label: 'Japan Standard Time (JST) - Tokyo' },
     { value: 'Asia/Singapore', label: 'Singapore Time (SGT) - Singapore' },
@@ -107,73 +108,84 @@ const NewTripPage = () => {
   };
   
   // Create new trip
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) return;
     
     setIsSubmitting(true);
     
-    // Generate new trip
-    const newTripId = `trip-${uuidv4()}`;
-    const days = {};
-    const activities = {};
-    const dayOrder = [];
-    
-    // Create initial days based on date range
-    const startDate = new Date(tripData.startDate);
-    const endDate = new Date(tripData.endDate);
-    const dayCount = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
-    
-    // Use user's preferred day count or calculated day count, whichever is smaller
-    const actualDayCount = Math.min(dayCount, tripData.initialDayCount);
-    
-    // Create days
-    for (let i = 0; i < actualDayCount; i++) {
-      const currentDate = new Date(startDate);
-      currentDate.setDate(startDate.getDate() + i);
+    try {
+      // Generate new trip ID
+      const newTripId = `trip-${uuidv4()}`;
       
-      const dayId = `day-${uuidv4()}`;
-      days[dayId] = {
-        id: dayId,
-        title: `Day ${i + 1} - ${currentDate.toLocaleDateString()}`,
-        date: currentDate.toISOString().split('T')[0],
-        activityIds: []
+      // Calculate trip length
+      const startDate = new Date(tripData.startDate);
+      const endDate = new Date(tripData.endDate);
+      const dayCount = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+      
+      // Create the new trip object without days initially
+      const newTrip = {
+        id: newTripId,
+        title: tripData.title,
+        location: tripData.location,
+        startDate: tripData.startDate,
+        endDate: tripData.endDate,
+        timeZone: tripData.timeZone,
+        type: tripData.tripType, // For consistency with filter
+        tripType: tripData.tripType,
+        color: tripData.color,
+        description: tripData.description,
+        dayCount,
+        progress: 0,
+        mood: '😊',
+        weather: '☀️',
+        thumbnail: 
+          tripData.tripType === 'leisure' ? 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2' : 
+          tripData.tripType === 'business' ? 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c' :
+          tripData.tripType === 'family' ? 'https://images.unsplash.com/photo-1622323494789-6238f53d70ad' :
+          tripData.tripType === 'romantic' ? 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8' :
+          tripData.tripType === 'adventure' ? 'https://images.unsplash.com/photo-1626016752965-1241a7e6cbe3' :
+          tripData.tripType === 'cultural' ? 'https://images.unsplash.com/photo-1599661046827-dacff0c0f09a' :
+          'https://images.unsplash.com/photo-1502920917128-1aa500764cbd',
+        createdAt: new Date().toISOString(),
+        lastModified: new Date().toISOString()
       };
       
-      dayOrder.push(dayId);
-    }
-    
-    const newTrip = {
-      id: newTripId,
-      title: tripData.title,
-      location: tripData.location,
-      startDate: tripData.startDate,
-      endDate: tripData.endDate,
-      timeZone: tripData.timeZone,
-      tripType: tripData.tripType,
-      color: tripData.color,
-      description: tripData.description,
-      days,
-      activities,
-      dayOrder,
-      createdAt: new Date().toISOString(),
-      lastModified: new Date().toISOString()
-    };
-    
-    // In a real app, you would save this to your database or localStorage
-    console.log('New trip created:', newTrip);
-    
-    // Mock saving to localStorage for demonstration
-    const savedTrips = JSON.parse(localStorage.getItem('savedTrips') || '[]');
-    savedTrips.push(newTrip);
-    localStorage.setItem('savedTrips', JSON.stringify(savedTrips));
-    
-    // Redirect to the new itinerary page
-    setTimeout(() => {
+      // Save the trip to the API
+      await api.trips.createTrip(newTrip);
+      
+      // Use user's preferred day count or calculated day count, whichever is smaller
+      const actualDayCount = Math.min(dayCount, tripData.initialDayCount);
+      
+      // Create and save days for the trip
+      for (let i = 0; i < actualDayCount; i++) {
+        const currentDate = new Date(startDate);
+        currentDate.setDate(startDate.getDate() + i);
+        
+        const dayId = `day-${uuidv4()}`;
+        const newDay = {
+          id: dayId,
+          title: `Day ${i + 1} - ${currentDate.toLocaleDateString()}`,
+          date: currentDate.toISOString().split('T')[0],
+          tripId: newTripId,
+          activityIds: []
+        };
+        
+        // Save day to the API
+        await api.days.createDay(newDay);
+      }
+      
+      // Redirect to the new itinerary page
+      setTimeout(() => {
+        setIsSubmitting(false);
+        navigate(`/itinerary/${newTripId}`);
+      }, 500);
+    } catch (err) {
+      console.error('Error creating trip:', err);
       setIsSubmitting(false);
-      navigate(`/itinerary/${newTripId}`);
-    }, 1000);
+      // You could set an error state here to display to the user
+    }
   };
   
   // Calculate days difference
@@ -336,7 +348,7 @@ const NewTripPage = () => {
                   >
                     <option value="">Select a time zone</option>
                     {timeZones.map(tz => (
-                      <option key={tz.value} value={tz.value}>{tz.label}</option>
+                      <option key={tz.key || tz.value} value={tz.value}>{tz.label}</option>
                     ))}
                   </select>
                   {errors.timeZone && <p className="mt-1 text-sm text-red-600">{errors.timeZone}</p>}

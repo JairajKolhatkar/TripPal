@@ -186,7 +186,7 @@ const DayColumn = ({
         <div className="flex space-x-2">
           <motion.button
             onClick={() => openAddActivityModal(day.id)}
-            className="text-primary-600 hover:text-primary-800 transition duration-200"
+            className="text-primary-600 hover:text-primary-800 transition duration-200 bg-primary-50 hover:bg-primary-100 p-2 rounded-full"
             title="Add activity"
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
@@ -283,11 +283,11 @@ const DayColumn = ({
 
       <motion.div 
         className="p-4 border-t"
-        animate={activities.length === 0 ? { opacity: 0, height: 0, padding: 0 } : { opacity: 1, height: 'auto' }}
+        animate={{ opacity: 1, height: 'auto' }}
       >
         <motion.button
           onClick={() => openAddActivityModal(day.id)}
-          className="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md transition duration-200 flex items-center justify-center"
+          className="w-full py-2 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-md transition duration-200 flex items-center justify-center"
           whileHover={{ 
             scale: 1.02, 
             backgroundColor: "#E0F2FE", 

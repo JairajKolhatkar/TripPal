@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ThemeToggle from '../components/ThemeToggle';
@@ -6,32 +6,69 @@ import BackgroundSlider from '../components/BackgroundSlider';
 import CurrencyDisplay from '../components/CurrencyDisplay';
 import { useTheme } from '../contexts/ThemeContext';
 import { useBackground } from '../contexts/BackgroundContext';
+import api from '../services/api';
 
 const HomePage = () => {
   const { isDarkMode } = useTheme();
   const { backgroundImages } = useBackground();
+  const [tripPackages, setTripPackages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  // Sample trip packages with prices
-  const tripPackages = [
-    {
-      destination: 'Goa Adventure',
-      duration: '5 days',
-      price: 25000, // in INR
-      image: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
-    },
-    {
-      destination: 'Rajasthan Heritage Tour',
-      duration: '7 days',
-      price: 45000, // in INR
-      image: 'https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
-    },
-    {
-      destination: 'Kerala Backwaters',
-      duration: '6 days',
-      price: 35000, // in INR
-      image: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'
-    },
-  ];
+  // Fetch trip packages from API
+  useEffect(() => {
+    const fetchTripPackages = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch all trips from API
+        const trips = await api.trips.getAllTrips();
+        
+        // Sort trips by date (same logic as Dashboard)
+        const sortedTrips = [...trips].sort((a, b) => {
+          const today = new Date();
+          const startDateA = new Date(a.startDate);
+          const startDateB = new Date(b.startDate);
+          
+          // Check if trips are upcoming or past
+          const aIsUpcoming = startDateA > today;
+          const bIsUpcoming = startDateB > today;
+          
+          // If both are upcoming or both are past, sort by date
+          if (aIsUpcoming === bIsUpcoming) {
+            // For upcoming trips, sort from closest to furthest
+            return aIsUpcoming ? 
+              startDateA - startDateB : // Ascending for upcoming trips (closest first)
+              startDateB - startDateA;  // Descending for past trips (most recent first)
+          }
+          
+          // If only one is upcoming, place it first
+          return aIsUpcoming ? -1 : 1;
+        });
+        
+        // Transform trips to packages format (take first 3 for featured section)
+        const packages = sortedTrips.slice(0, 3).map(trip => ({
+          id: trip.id,
+          destination: trip.title,
+          location: trip.location,
+          duration: `${trip.dayCount} days`,
+          price: 25000 + Math.floor(Math.random() * 30000), // Generate a random price for demo
+          image: trip.thumbnail,
+          startDate: trip.startDate,
+          endDate: trip.endDate
+        }));
+        
+        setTripPackages(packages);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching trip packages:', err);
+        setError('Failed to load featured trips');
+        setLoading(false);
+      }
+    };
+    
+    fetchTripPackages();
+  }, []);
 
   return (
     <div className={`min-h-screen relative overflow-hidden ${isDarkMode ? 'dark' : ''}`}>
@@ -167,36 +204,49 @@ const HomePage = () => {
             </p>
           </motion.div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            {tripPackages.map((pkg, index) => (
-              <motion.div
-                key={index}
-                className="bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <div className="h-48 overflow-hidden">
-                  <img 
-                    src={pkg.image} 
-                    alt={pkg.destination}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" 
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{pkg.destination}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">{pkg.duration}</p>
-                  <div className="flex justify-between items-center">
-                    <CurrencyDisplay amount={pkg.price} initialCurrency="INR" />
-                    <Link to="/dashboard" className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors text-sm">
-                      Book Now
-                    </Link>
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-primary-500"></div>
+            </div>
+          ) : error ? (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-6 py-4 rounded-md max-w-xl mx-auto">
+              <p>{error}</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-3 gap-8">
+              {tripPackages.map((pkg, index) => (
+                <motion.div
+                  key={pkg.id}
+                  className="bg-white dark:bg-gray-900 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src={pkg.image} 
+                      alt={pkg.destination}
+                      className="w-full h-full object-cover hover:scale-110 transition-transform duration-500" 
+                    />
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{pkg.destination}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 mb-1">{pkg.location}</p>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                      {new Date(pkg.startDate).toLocaleDateString()} - {new Date(pkg.endDate).toLocaleDateString()}
+                    </p>
+                    <div className="flex justify-between items-center">
+                      <CurrencyDisplay amount={pkg.price} initialCurrency="INR" />
+                      <Link to={`/itinerary/${pkg.id}`} className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors text-sm">
+                        View Trip
+                      </Link>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
       
