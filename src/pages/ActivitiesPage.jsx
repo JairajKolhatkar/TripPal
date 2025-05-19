@@ -53,10 +53,15 @@ const ActivitiesPage = () => {
   
   // Filter activities based on type and search term
   const filteredActivities = activities.filter(activity => {
+    if (!activity) return false;
+    
     const matchesType = filter === 'all' || activity.type === filter;
-    const matchesSearch = activity.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         activity.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         activity.itineraryTitle.toLowerCase().includes(searchTerm.toLowerCase());
+    const searchTermLower = searchTerm.toLowerCase();
+    
+    const matchesSearch = 
+      (activity.content && activity.content.toLowerCase().includes(searchTermLower)) ||
+      (activity.location && activity.location.toLowerCase().includes(searchTermLower)) ||
+      (activity.itineraryTitle && activity.itineraryTitle.toLowerCase().includes(searchTermLower));
     
     return matchesType && matchesSearch;
   });

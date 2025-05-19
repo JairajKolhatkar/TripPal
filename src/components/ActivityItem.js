@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import { motion } from 'framer-motion';
 
 const ActivityItem = ({ activity, index, removeActivity, isCurrent = false }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [budget, setBudget] = useState(activity.budget || 0);
+  const [isEditingBudget, setIsEditingBudget] = useState(false);
   
   // Activity type icons
   const typeIcons = {
@@ -23,6 +25,15 @@ const ActivityItem = ({ activity, index, removeActivity, isCurrent = false }) =>
     other: 'bg-gray-100 border-gray-200 text-gray-800'
   };
   
+  // Save budget to localStorage whenever it changes
+  useEffect(() => {
+    if (budget !== activity.budget) {
+      const activities = JSON.parse(localStorage.getItem('activities') || '{}');
+      activities[activity.id] = { ...activities[activity.id], budget };
+      localStorage.setItem('activities', JSON.stringify(activities));
+    }
+  }, [budget, activity.id, activity.budget]);
+  
   const handleRemove = (e) => {
     e.stopPropagation();
     removeActivity(activity.id);
@@ -35,6 +46,15 @@ const ActivityItem = ({ activity, index, removeActivity, isCurrent = false }) =>
   
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
+  };
+  
+  const handleBudgetChange = (e) => {
+    const value = parseFloat(e.target.value) || 0;
+    setBudget(value);
+  };
+  
+  const handleBudgetBlur = () => {
+    setIsEditingBudget(false);
   };
   
   // Format activity time to show AM/PM
@@ -211,6 +231,31 @@ const ActivityItem = ({ activity, index, removeActivity, isCurrent = false }) =>
               transition={{ duration: 1, repeat: Infinity, repeatType: "reverse" }}
             />
           )}
+          
+          {/* Budget section */}
+          <div className="mt-2 flex items-center">
+            <span className="text-sm text-gray-500 mr-2">Budget:</span>
+            {isEditingBudget ? (
+              <input
+                type="number"
+                value={budget}
+                onChange={handleBudgetChange}
+                onBlur={handleBudgetBlur}
+                className="w-24 px-2 py-1 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                autoFocus
+              />
+            ) : (
+              <button
+                onClick={() => setIsEditingBudget(true)}
+                className="text-sm text-primary-600 hover:text-primary-800 flex items-center"
+              >
+                <span className="mr-1">${budget.toFixed(2)}</span>
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+              </button>
+            )}
+          </div>
         </motion.div>
       )}
     </Draggable>

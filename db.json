@@ -8,14 +8,75 @@
       "endDate": "2024-04-12",
       "type": "leisure",
       "tripType": "leisure",
-      "color": "#3B82F6",
-      "thumbnail": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2",
-      "progress": 100,
+      "color": "#10B981",
+      "thumbnail": "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+      "progress": 40,
       "dayCount": 7,
-      "mood": "😄",
+      "mood": "🏖️",
       "timeZone": "Asia/Kolkata",
       "weather": "☀️",
-      "description": "A relaxing beach vacation in Goa with plenty of time for swimming and sunbathing."
+      "description": "A relaxing beach vacation in beautiful Goa",
+      "budget": {
+        "total": 4000,
+        "currency": "USD",
+        "categories": {
+          "accommodation": 1500,
+          "transportation": 800,
+          "food": 1000,
+          "activities": 500,
+          "shopping": 200
+        },
+        "spent": 0,
+        "remaining": 4000
+      },
+      "status": "upcoming",
+      "createdAt": "2024-03-01T10:00:00Z"
+    },
+    {
+      "id": "trip-2",
+      "title": "Business Trip",
+      "destination": "Tokyo, Japan",
+      "startDate": "2024-04-10",
+      "endDate": "2024-04-15",
+      "description": "Annual business conference and meetings",
+      "budget": {
+        "total": 3000,
+        "currency": "USD",
+        "categories": {
+          "accommodation": 1200,
+          "transportation": 600,
+          "food": 800,
+          "activities": 200,
+          "shopping": 200
+        },
+        "spent": 0,
+        "remaining": 3000
+      },
+      "status": "upcoming",
+      "createdAt": "2024-03-10T14:30:00Z"
+    },
+    {
+      "id": "trip-3",
+      "title": "Weekend Getaway",
+      "destination": "Paris, France",
+      "startDate": "2024-05-01",
+      "endDate": "2024-05-03",
+      "description": "Quick romantic getaway to the City of Light",
+      "budget": {
+        "total": 2000,
+        "currency": "EUR",
+        "categories": {
+          "accommodation": 800,
+          "transportation": 400,
+          "food": 500,
+          "activities": 200,
+          "shopping": 100
+        },
+        "spent": 0,
+        "remaining": 2000
+      },
+      "status": "upcoming",
+      "createdAt": "2024-03-20T09:15:00Z"
     },
     {
       "id": "trip-8",
@@ -35,7 +96,7 @@
       "description": "Quick weekend getaway to explore Mumbai's vibrant city life."
     },
     {
-      "id": "trip-2",
+      "id": "trip-10",
       "title": "Rajasthan Heritage Tour",
       "location": "Jaipur, India",
       "startDate": "2024-10-15",
@@ -52,7 +113,7 @@
       "description": "Explore the rich cultural heritage of Rajasthan, including historic forts and palaces."
     },
     {
-      "id": "trip-3",
+      "id": "trip-11",
       "title": "Business in Dubai",
       "location": "Dubai, UAE",
       "startDate": "2024-07-12",
@@ -166,7 +227,10 @@
       "location": "Bardez, Goa",
       "itineraryTitle": "Goa Beach Vacation",
       "itineraryId": "trip-1",
-      "notes": "Reservation confirmation: #GOA24589"
+      "notes": "Reservation confirmation: #GOA24589",
+      "budget": 350,
+      "tripId": "trip-1",
+      "dayId": "day-1"
     },
     {
       "id": "activity-2",
@@ -177,7 +241,10 @@
       "location": "Calangute Beach, Goa",
       "itineraryTitle": "Goa Beach Vacation",
       "itineraryId": "trip-1",
-      "notes": "Bring sunscreen and beach towels"
+      "notes": "Bring sunscreen and beach towels",
+      "budget": 75,
+      "tripId": "trip-1",
+      "dayId": "day-2"
     },
     {
       "id": "activity-3",
@@ -187,7 +254,7 @@
       "type": "attraction",
       "location": "Amber Fort, Jaipur",
       "itineraryTitle": "Rajasthan Heritage Tour",
-      "itineraryId": "trip-2",
+      "itineraryId": "trip-10",
       "notes": "Hire a local guide, bring camera"
     },
     {
@@ -198,8 +265,8 @@
       "type": "business",
       "location": "Dubai World Trade Centre",
       "itineraryTitle": "Business in Dubai",
-      "itineraryId": "trip-3",
-      "notes": "Final presentation slides review"
+      "itineraryId": "trip-11",
+      "notes": "Prepare slides and demos"
     },
     {
       "id": "activity-5",
@@ -441,7 +508,10 @@
       "location": "Dudhsagar Falls, Goa",
       "itineraryTitle": "Goa Beach Vacation",
       "itineraryId": "trip-1",
-      "notes": "Jeep safari included. Bring swimsuit and water shoes. Packed lunch provided."
+      "notes": "Jeep safari included. Bring swimsuit and water shoes. Packed lunch provided.",
+      "budget": 120,
+      "tripId": "trip-1",
+      "dayId": "day-3"
     },
     {
       "id": "activity-27",
@@ -452,7 +522,10 @@
       "location": "Sahakari Spice Farm, Ponda",
       "itineraryTitle": "Goa Beach Vacation",
       "itineraryId": "trip-1",
-      "notes": "Traditional Goan lunch included. Guided tour with spice tasting."
+      "notes": "Traditional Goan lunch included. Guided tour with spice tasting.",
+      "budget": 90,
+      "tripId": "trip-1",
+      "dayId": "day-4"
     },
     {
       "id": "activity-28",
@@ -463,7 +536,10 @@
       "location": "Baga Beach, Goa",
       "itineraryTitle": "Goa Beach Vacation",
       "itineraryId": "trip-1",
-      "notes": "Parasailing, jet skiing, and banana boat ride. Safety equipment provided."
+      "notes": "Parasailing, jet skiing, and banana boat ride. Safety equipment provided.",
+      "budget": 150,
+      "tripId": "trip-1",
+      "dayId": "day-5"
     },
     {
       "id": "activity-29",
@@ -474,7 +550,10 @@
       "location": "Old Goa",
       "itineraryTitle": "Goa Beach Vacation",
       "itineraryId": "trip-1",
-      "notes": "Visit Basilica of Bom Jesus and Se Cathedral. Dress code: Covered shoulders and knees."
+      "notes": "Visit Basilica of Bom Jesus and Se Cathedral. Dress code: Covered shoulders and knees.",
+      "budget": 65,
+      "tripId": "trip-1",
+      "dayId": "day-6"
     },
     {
       "id": "activity-30",
@@ -485,7 +564,10 @@
       "location": "Panaji, Goa",
       "itineraryTitle": "Goa Beach Vacation",
       "itineraryId": "trip-1",
-      "notes": "Dinner cruise with live music. Reservation confirmed. Duration: 2 hours."
+      "notes": "Dinner cruise with live music. Reservation confirmed. Duration: 2 hours.",
+      "budget": 180,
+      "tripId": "trip-1",
+      "dayId": "day-7"
     },
     {
       "id": "activity-31",
@@ -495,7 +577,7 @@
       "type": "attraction",
       "location": "City Palace, Jaipur",
       "itineraryTitle": "Rajasthan Heritage Tour",
-      "itineraryId": "trip-2",
+      "itineraryId": "trip-10",
       "notes": "Entry fee: INR 500. Audio guide available. Photography allowed."
     },
     {
@@ -506,7 +588,7 @@
       "type": "attraction",
       "location": "Hawa Mahal, Jaipur",
       "itineraryTitle": "Rajasthan Heritage Tour",
-      "itineraryId": "trip-2",
+      "itineraryId": "trip-10",
       "notes": "Best photography time: Early morning. Entry fee: INR 200."
     },
     {
@@ -517,7 +599,7 @@
       "type": "attraction",
       "location": "Amber Fort, Jaipur",
       "itineraryTitle": "Rajasthan Heritage Tour",
-      "itineraryId": "trip-2",
+      "itineraryId": "trip-10",
       "notes": "Booked in advance. Duration: 30 minutes. Bring cash for tips."
     },
     {
@@ -528,7 +610,7 @@
       "type": "attraction",
       "location": "Jantar Mantar, Jaipur",
       "itineraryTitle": "Rajasthan Heritage Tour",
-      "itineraryId": "trip-2",
+      "itineraryId": "trip-10",
       "notes": "Guided tour included. Entry fee: INR 300. Best time: Morning."
     },
     {
@@ -539,7 +621,7 @@
       "type": "leisure",
       "location": "Chokhi Dhani, Jaipur",
       "itineraryTitle": "Rajasthan Heritage Tour",
-      "itineraryId": "trip-2",
+      "itineraryId": "trip-10",
       "notes": "Cultural show included. Reservation confirmed. Traditional dress optional."
     },
     {
@@ -550,7 +632,7 @@
       "type": "travel",
       "location": "Dubai International Airport",
       "itineraryTitle": "Business in Dubai",
-      "itineraryId": "trip-3",
+      "itineraryId": "trip-11",
       "notes": "Airport pickup arranged by hotel. Check-in at 3 PM."
     },
     {
@@ -561,7 +643,7 @@
       "type": "business",
       "location": "At.mosphere, Burj Khalifa",
       "itineraryTitle": "Business in Dubai",
-      "itineraryId": "trip-3",
+      "itineraryId": "trip-11",
       "notes": "Reservation confirmed. Business casual attire. Table for 6."
     },
     {
@@ -572,7 +654,7 @@
       "type": "business",
       "location": "Dubai World Trade Centre",
       "itineraryTitle": "Business in Dubai",
-      "itineraryId": "trip-3",
+      "itineraryId": "trip-11",
       "notes": "Conference Room 302. Projector and coffee service arranged."
     },
     {
@@ -583,7 +665,7 @@
       "type": "attraction",
       "location": "Burj Khalifa",
       "itineraryTitle": "Business in Dubai",
-      "itineraryId": "trip-3",
+      "itineraryId": "trip-11",
       "notes": "Tickets booked for At The Top observation deck. Sunset timing."
     },
     {
@@ -594,7 +676,7 @@
       "type": "leisure",
       "location": "Dubai Desert Conservation Reserve",
       "itineraryTitle": "Business in Dubai",
-      "itineraryId": "trip-3",
+      "itineraryId": "trip-11",
       "notes": "Includes dinner and entertainment. Pickup from hotel at 3 PM."
     },
     {
@@ -651,6 +733,78 @@
       "itineraryTitle": "Kerala Backwaters",
       "itineraryId": "trip-4",
       "notes": "Traditional treatment. Duration: 2 hours. Pre-booked appointment."
+    },
+    {
+      "id": "activity-47",
+      "content": "City Palace Tour",
+      "time": "14:00",
+      "date": "2024-10-17",
+      "type": "attraction",
+      "location": "City Palace, Jaipur",
+      "itineraryTitle": "Rajasthan Heritage Tour",
+      "itineraryId": "trip-10",
+      "notes": "Historical palace exploration"
+    },
+    {
+      "id": "activity-48",
+      "content": "Jal Mahal Visit",
+      "time": "16:30",
+      "date": "2024-10-17",
+      "type": "attraction",
+      "location": "Jal Mahal, Jaipur",
+      "itineraryTitle": "Rajasthan Heritage Tour",
+      "itineraryId": "trip-10",
+      "notes": "Water Palace visit"
+    },
+    {
+      "id": "activity-52",
+      "content": "Client Meeting #1",
+      "time": "09:00",
+      "date": "2024-07-15",
+      "type": "business",
+      "location": "Client Office, Dubai Marina",
+      "itineraryTitle": "Business in Dubai",
+      "itineraryId": "trip-11",
+      "notes": "Prepare presentation and materials"
+    },
+    {
+      "id": "activity-53",
+      "content": "Business Lunch",
+      "time": "12:30",
+      "date": "2024-07-15",
+      "type": "meal",
+      "location": "Burj Al Arab",
+      "itineraryTitle": "Business in Dubai",
+      "itineraryId": "trip-11",
+      "notes": "Reservation under Smith"
+    },
+    {
+      "id": "activity-1747652224206",
+      "content": "Hotel ",
+      "time": "08:30",
+      "type": "other",
+      "location": "Goa",
+      "notes": "Hotel Booking",
+      "duration": 240,
+      "createdAt": "2025-05-19T10:57:04.207Z",
+      "tripId": "trip-1",
+      "dayId": "day-1",
+      "date": "2024-04-05",
+      "budget": 450
+    },
+    {
+      "id": "activity-1747653175397",
+      "content": "Party",
+      "time": "10:10",
+      "type": "attraction",
+      "location": "Goa",
+      "notes": "",
+      "duration": 250,
+      "createdAt": "2025-05-19T11:12:55.397Z",
+      "tripId": "trip-1",
+      "dayId": "day-2",
+      "date": "2024-04-06",
+      "budget": 125
     }
   ],
   "days": {
@@ -660,7 +814,8 @@
       "date": "2024-04-05",
       "tripId": "trip-1",
       "activityIds": [
-        "activity-1"
+        "activity-1",
+        "activity-1747652224206"
       ]
     },
     "day-2": {
@@ -669,52 +824,53 @@
       "date": "2024-04-06",
       "tripId": "trip-1",
       "activityIds": [
-        "activity-2"
+        "activity-2",
+        "activity-1747653175397"
       ]
     },
     "day-3": {
       "id": "day-3",
-      "title": "Day 1 - Amber Fort",
-      "date": "2024-10-16",
-      "tripId": "trip-2",
+      "title": "Day 3 - Waterfall Adventure",
+      "date": "2024-04-07",
+      "tripId": "trip-1",
       "activityIds": [
-        "activity-3"
+        "activity-26"
       ]
     },
     "day-4": {
       "id": "day-4",
-      "title": "Day 3 - Conference",
-      "date": "2024-07-14",
-      "tripId": "trip-3",
+      "title": "Day 4 - Cultural Experience",
+      "date": "2024-04-08",
+      "tripId": "trip-1",
       "activityIds": [
-        "activity-4"
+        "activity-27"
       ]
     },
     "day-5": {
       "id": "day-5",
-      "title": "Day 3 - Houseboat",
-      "date": "2024-12-22",
-      "tripId": "trip-4",
+      "title": "Day 5 - Beach Activities",
+      "date": "2024-04-09",
+      "tripId": "trip-1",
       "activityIds": [
-        "activity-5"
+        "activity-28"
       ]
     },
     "day-6": {
       "id": "day-6",
-      "title": "Day 1 - Opening Ceremony",
-      "date": "2025-02-10",
-      "tripId": "trip-5",
+      "title": "Day 6 - Historical Tour",
+      "date": "2024-04-10",
+      "tripId": "trip-1",
       "activityIds": [
-        "activity-6"
+        "activity-29"
       ]
     },
     "day-7": {
       "id": "day-7",
-      "title": "Day 3 - Trek",
-      "date": "2025-05-14",
-      "tripId": "trip-6",
+      "title": "Day 7 - River Cruise",
+      "date": "2024-04-11",
+      "tripId": "trip-1",
       "activityIds": [
-        "activity-7"
+        "activity-30"
       ]
     },
     "day-8": {
@@ -854,109 +1010,64 @@
     },
     "day-23": {
       "id": "day-23",
-      "title": "Day 3 - Waterfall Adventure",
-      "date": "2024-04-07",
-      "tripId": "trip-1",
-      "activityIds": [
-        "activity-26"
-      ]
-    },
-    "day-24": {
-      "id": "day-24",
-      "title": "Day 4 - Cultural Experience",
-      "date": "2024-04-08",
-      "tripId": "trip-1",
-      "activityIds": [
-        "activity-27"
-      ]
-    },
-    "day-25": {
-      "id": "day-25",
-      "title": "Day 5 - Beach Activities",
-      "date": "2024-04-09",
-      "tripId": "trip-1",
-      "activityIds": [
-        "activity-28"
-      ]
-    },
-    "day-26": {
-      "id": "day-26",
-      "title": "Day 6 - Historical Tour",
-      "date": "2024-04-10",
-      "tripId": "trip-1",
-      "activityIds": [
-        "activity-29"
-      ]
-    },
-    "day-27": {
-      "id": "day-27",
-      "title": "Day 7 - River Cruise",
-      "date": "2024-04-11",
-      "tripId": "trip-1",
-      "activityIds": [
-        "activity-30"
-      ]
-    },
-    "day-28": {
-      "id": "day-28",
       "title": "Day 1 - Palace Tour",
       "date": "2024-10-15",
-      "tripId": "trip-2",
+      "tripId": "trip-10",
       "activityIds": [
         "activity-31",
         "activity-32"
       ]
     },
-    "day-29": {
-      "id": "day-29",
+    "day-24": {
+      "id": "day-24",
       "title": "Day 2 - Fort Visit",
       "date": "2024-10-16",
-      "tripId": "trip-2",
+      "tripId": "trip-10",
       "activityIds": [
         "activity-33"
       ]
     },
-    "day-30": {
-      "id": "day-30",
+    "day-25": {
+      "id": "day-25",
       "title": "Day 3 - Cultural Experience",
       "date": "2024-10-17",
-      "tripId": "trip-2",
+      "tripId": "trip-10",
       "activityIds": [
         "activity-34",
         "activity-35"
       ]
     },
-    "day-31": {
-      "id": "day-31",
+    "day-26": {
+      "id": "day-26",
       "title": "Day 1 - Arrival in Dubai",
       "date": "2024-07-12",
-      "tripId": "trip-3",
+      "tripId": "trip-11",
       "activityIds": [
         "activity-36",
         "activity-37"
       ]
     },
-    "day-32": {
-      "id": "day-32",
+    "day-27": {
+      "id": "day-27",
       "title": "Day 2 - Business & Leisure",
       "date": "2024-07-13",
-      "tripId": "trip-3",
+      "tripId": "trip-11",
       "activityIds": [
         "activity-38",
         "activity-39"
       ]
     },
-    "day-33": {
-      "id": "day-33",
+    "day-28": {
+      "id": "day-28",
       "title": "Day 4 - Desert Adventure",
       "date": "2024-07-15",
-      "tripId": "trip-3",
+      "tripId": "trip-11",
       "activityIds": [
         "activity-40"
       ]
     },
-    "day-34": {
-      "id": "day-34",
+    "day-29": {
+      "id": "day-29",
       "title": "Day 1 - Arrival in Kerala",
       "date": "2024-12-20",
       "tripId": "trip-4",
@@ -965,8 +1076,8 @@
         "activity-42"
       ]
     },
-    "day-35": {
-      "id": "day-35",
+    "day-30": {
+      "id": "day-30",
       "title": "Day 2 - Cultural Experience",
       "date": "2024-12-21",
       "tripId": "trip-4",
@@ -974,8 +1085,8 @@
         "activity-43"
       ]
     },
-    "day-36": {
-      "id": "day-36",
+    "day-31": {
+      "id": "day-31",
       "title": "Day 4 - Spice Tour",
       "date": "2024-12-23",
       "tripId": "trip-4",
@@ -983,8 +1094,8 @@
         "activity-44"
       ]
     },
-    "day-37": {
-      "id": "day-37",
+    "day-32": {
+      "id": "day-32",
       "title": "Day 5 - Wellness Day",
       "date": "2024-12-24",
       "tripId": "trip-4",

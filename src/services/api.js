@@ -5,7 +5,7 @@
 
 const API_URL = 'http://localhost:3001';
 
-// Sample data in case the API fails (fallback)
+// Sample data for fallback
 const sampleData = {
   trips: [
     {
@@ -15,74 +15,61 @@ const sampleData = {
       startDate: '2024-04-05',
       endDate: '2024-04-12',
       type: 'leisure',
-      tripType: 'leisure',
-      color: '#3B82F6',
-      thumbnail: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2',
-      progress: 100,
-      dayCount: 7,
-      mood: '😄',
       timeZone: 'Asia/Kolkata',
-      weather: '☀️'
-    },
+      createdAt: new Date().toISOString()
+    }
+  ],
+  days: [
     {
-      id: 'trip-2',
-      title: 'Rajasthan Heritage Tour',
-      location: 'Jaipur, India',
-      startDate: '2024-10-15',
-      endDate: '2024-10-22',
-      type: 'cultural',
-      tripType: 'cultural',
-      color: '#F59E0B',
-      thumbnail: 'https://images.unsplash.com/photo-1599661046827-dacff0c0f09a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-      progress: 35,
-      dayCount: 7,
-      mood: '🏛️',
-      timeZone: 'Asia/Kolkata',
-      weather: '🌤️'
-    },
+      id: 'day-1',
+      tripId: 'trip-1',
+      title: 'Day 1',
+      date: '2024-04-05',
+      activityIds: ['activity-1']
+    }
+  ],
+  activities: [
     {
-      id: 'trip-3',
-      title: 'Business in Dubai',
-      location: 'Dubai, UAE',
-      startDate: '2024-07-12',
-      endDate: '2024-07-18',
-      type: 'business',
-      tripType: 'business',
-      color: '#8B5CF6',
-      thumbnail: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c',
-      progress: 65,
-      dayCount: 6,
-      mood: '🤝',
-      timeZone: 'Asia/Dubai',
-      weather: '🔥'
+      id: 'activity-1',
+      tripId: 'trip-1',
+      dayId: 'day-1',
+      content: 'Beach Visit',
+      time: '10:00',
+      type: 'leisure',
+      location: 'Calangute Beach'
     }
   ]
 };
 
-// Generic fetch function with error handling
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Something went wrong');
+  }
+  return response.json();
+};
+
+// Generic fetch function with error handling and fallback
 const fetchData = async (endpoint, options = {}) => {
   try {
-    // Properly encode the endpoint URL
-    const encodedEndpoint = encodeURIComponent(endpoint).replace(/%2F/g, '/');
-    const url = `${API_URL}/${encodedEndpoint}`;
-    
+    const url = `${API_URL}/${endpoint}`;
     console.log('Fetching from URL:', url);
     
     const response = await fetch(url, options);
-    
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-    
-    return await response.json();
+    return await handleResponse(response);
   } catch (error) {
     console.error('API Request Failed:', error);
     
-    // If it's an error that might be due to JSON Server issues,
-    // return sample data as a fallback
-    if (endpoint === 'trips' && !options.method) {
-      console.warn('Using sample trip data as fallback');
-      return sampleData.trips;
+    // Return fallback data for GET requests
+    if (!options.method || options.method === 'GET') {
+      console.warn('Using fallback data');
+      if (endpoint.startsWith('trips/')) {
+        const id = endpoint.split('/')[1];
+        return sampleData.trips.find(trip => trip.id === id);
+      }
+      if (endpoint === 'trips') return sampleData.trips;
+      if (endpoint === 'days') return sampleData.days;
+      if (endpoint === 'activities') return sampleData.activities;
     }
     
     throw error;
@@ -90,123 +77,155 @@ const fetchData = async (endpoint, options = {}) => {
 };
 
 // Trip related API calls
-export const tripApi = {
+const tripApi = {
   // Get all trips
   getAllTrips: () => fetchData('trips'),
   
   // Get a single trip by ID
-  getTripById: (id) => {
-    try {
-      return fetchData(`trips/${encodeURIComponent(id)}`);
-    } catch (error) {
-      console.error('Error fetching trip:', error);
-      // Return a matching trip from sample data if available
-      const sampleTrip = sampleData.trips.find(trip => trip.id === id);
-      if (sampleTrip) return Promise.resolve(sampleTrip);
-      throw error;
-    }
+  getTripById: async (tripId) => {
+    console.log('Fetching trip:', tripId);
+    const response = await fetch(`${API_URL}/trips/${tripId}`);
+    return handleResponse(response);
   },
   
   // Create a new trip
-  createTrip: (tripData) => fetchData('trips', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(tripData)
-  }),
+  createTrip: async (tripData) => {
+    const response = await fetch(`${API_URL}/trips`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(tripData),
+    });
+    return handleResponse(response);
+  },
   
   // Update an existing trip
-  updateTrip: (id, tripData) => fetchData(`trips/${encodeURIComponent(id)}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(tripData)
-  }),
+  updateTrip: async (tripId, tripData) => {
+    const response = await fetch(`${API_URL}/trips/${tripId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(tripData),
+    });
+    return handleResponse(response);
+  },
   
   // Delete a trip
-  deleteTrip: (id) => fetchData(`trips/${encodeURIComponent(id)}`, {
-    method: 'DELETE'
-  })
+  deleteTrip: async (tripId) => {
+    const response = await fetch(`${API_URL}/trips/${tripId}`, {
+      method: 'DELETE',
+    });
+    return handleResponse(response);
+  },
+  
+  updateBudget: async (tripId, budgetUpdate) => {
+    return fetchData(`/trips/${tripId}/budget`, {
+      method: 'PATCH',
+      body: JSON.stringify(budgetUpdate)
+    });
+  }
 };
 
 // Activity related API calls
-export const activityApi = {
+const activityApi = {
   // Get all activities
   getAllActivities: () => fetchData('activities'),
   
   // Get activities by trip ID
   getActivitiesByTripId: async (tripId) => {
-    try {
-      const activities = await fetchData('activities');
-      return activities.filter(activity => activity.itineraryId === tripId);
-    } catch (error) {
-      console.error('Error fetching activities by trip ID:', error);
-      return [];
-    }
+    console.log('Fetching activities for trip:', tripId);
+    const response = await fetch(`${API_URL}/activities?tripId=${tripId}`);
+    return handleResponse(response);
   },
   
   // Get a single activity by ID
   getActivityById: (id) => fetchData(`activities/${encodeURIComponent(id)}`),
   
   // Create a new activity
-  createActivity: (activityData) => fetchData('activities', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(activityData)
-  }),
+  createActivity: async (activityData) => {
+    const response = await fetch(`${API_URL}/activities`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(activityData),
+    });
+    return handleResponse(response);
+  },
   
   // Update an existing activity
-  updateActivity: (id, activityData) => fetchData(`activities/${encodeURIComponent(id)}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(activityData)
-  }),
+  updateActivity: async (activityId, activityData) => {
+    const response = await fetch(`${API_URL}/activities/${activityId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(activityData),
+    });
+    return handleResponse(response);
+  },
   
   // Delete an activity
-  deleteActivity: (id) => fetchData(`activities/${encodeURIComponent(id)}`, {
-    method: 'DELETE'
-  })
+  deleteActivity: async (activityId) => {
+    const response = await fetch(`${API_URL}/activities/${activityId}`, {
+      method: 'DELETE',
+    });
+    return handleResponse(response);
+  }
 };
 
 // Day related API calls
-export const dayApi = {
+const dayApi = {
   // Get all days
   getAllDays: () => fetchData('days'),
   
   // Get days by trip ID
   getDaysByTripId: async (tripId) => {
-    try {
-      const days = await fetchData('days');
-      return days.filter(day => day.tripId === tripId);
-    } catch (error) {
-      console.error('Error fetching days by trip ID:', error);
-      return [];
-    }
+    console.log('Fetching days for trip:', tripId);
+    const response = await fetch(`${API_URL}/days?tripId=${tripId}`);
+    return handleResponse(response);
   },
   
   // Get a single day by ID
   getDayById: (id) => fetchData(`days/${encodeURIComponent(id)}`),
   
   // Create a new day
-  createDay: (dayData) => fetchData('days', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dayData)
-  }),
+  createDay: async (dayData) => {
+    const response = await fetch(`${API_URL}/days`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dayData),
+    });
+    return handleResponse(response);
+  },
   
   // Update an existing day
-  updateDay: (id, dayData) => fetchData(`days/${encodeURIComponent(id)}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dayData)
-  }),
+  updateDay: async (dayId, dayData) => {
+    const response = await fetch(`${API_URL}/days/${dayId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dayData),
+    });
+    return handleResponse(response);
+  },
   
   // Delete a day
-  deleteDay: (id) => fetchData(`days/${encodeURIComponent(id)}`, {
-    method: 'DELETE'
-  })
+  deleteDay: async (dayId) => {
+    const response = await fetch(`${API_URL}/days/${dayId}`, {
+      method: 'DELETE',
+    });
+    return handleResponse(response);
+  }
 };
 
 // User related API calls
-export const userApi = {
+const userApi = {
   // Get user profile
   getUserProfile: (id) => fetchData(`users/${encodeURIComponent(id)}`),
   
@@ -218,12 +237,27 @@ export const userApi = {
   })
 };
 
+// Expenses related API calls
+const expensesApi = {
+  createExpense: async (expenseData) => {
+    return fetchData('/expenses', {
+      method: 'POST',
+      body: JSON.stringify(expenseData)
+    });
+  },
+  
+  getExpensesByTripId: async (tripId) => {
+    return fetchData(`/expenses?tripId=${tripId}`);
+  }
+};
+
 // Export a default object with all API services
 const api = {
   trips: tripApi,
   activities: activityApi,
   days: dayApi,
-  users: userApi
+  users: userApi,
+  expenses: expensesApi
 };
 
 export default api; 

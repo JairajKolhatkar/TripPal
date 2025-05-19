@@ -59,9 +59,12 @@ const Dashboard = () => {
   // Filter itineraries based on search term, filter type, and date
   useEffect(() => {
     const filtered = itineraries.filter(itinerary => {
+      // Handle both "location" and "destination" fields
+      const locationField = itinerary.location || itinerary.destination || '';
+      
       const matchesSearch = 
         itinerary.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        itinerary.location.toLowerCase().includes(searchTerm.toLowerCase());
+        locationField.toLowerCase().includes(searchTerm.toLowerCase());
         
       const matchesType = filterType === 'all' || itinerary.type === filterType;
       
@@ -310,7 +313,7 @@ const Dashboard = () => {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{itinerary.title}</h3>
                     <div className="flex items-center space-x-2">
                       <select
-                        value={itinerary.mood}
+                        value={itinerary.mood || '😄'}
                         onChange={(e) => updateMood(itinerary.id, e.target.value)}
                         className="text-lg bg-transparent border-none focus:ring-0"
                       >
@@ -318,13 +321,20 @@ const Dashboard = () => {
                           <option key={mood} value={mood}>{mood}</option>
                         ))}
                       </select>
+                      <span className="text-sm text-gray-600 flex items-center">
+                        <svg className="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {itinerary.location || itinerary.destination}
+                      </span>
                       <button
                         onClick={() => deleteTrip(itinerary.id)}
-                        className="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50"
-                        title="Delete trip"
+                        className="text-red-600 hover:text-red-800 transition-colors"
+                        title="Delete Trip"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
                       </button>
                     </div>

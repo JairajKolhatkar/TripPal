@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const activityTypes = [
   { 
@@ -91,6 +91,8 @@ const NewActivityForm = ({ onClose, onAddActivity }) => {
     notes: '',
     duration: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -100,14 +102,48 @@ const NewActivityForm = ({ onClose, onAddActivity }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.content.trim()) return;
     
-    onAddActivity({
-      ...formData,
-      duration: formData.duration ? parseInt(formData.duration) : null,
-    });
+    try {
+      setIsSubmitting(true);
+      setSubmitError(null);
+      
+      // Validate required fields
+      if (!formData.time) {
+        throw new Error('Please select a time for the activity');
+      }
+      
+      // Prepare activity data
+      const activityData = {
+        ...formData,
+        duration: formData.duration ? parseInt(formData.duration) : null,
+        id: `activity-${Date.now()}`,
+        createdAt: new Date().toISOString(),
+      };
+      
+      // Call the parent's onAddActivity function
+      await onAddActivity(activityData);
+      
+      // Show success feedback
+      const successMessage = document.createElement('div');
+      successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+      successMessage.textContent = 'Activity added successfully!';
+      document.body.appendChild(successMessage);
+      
+      // Remove success message after 3 seconds
+      setTimeout(() => {
+        successMessage.remove();
+        onClose();
+      }, 3000);
+      
+    } catch (error) {
+      console.error('Error adding activity:', error);
+      setSubmitError(error.message || 'Failed to add activity. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Get the icon for the selected activity type
@@ -115,7 +151,7 @@ const NewActivityForm = ({ onClose, onAddActivity }) => {
 
   return (
     <motion.div 
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4"
       initial="hidden"
       animate="visible"
       exit="hidden"
@@ -123,28 +159,20 @@ const NewActivityForm = ({ onClose, onAddActivity }) => {
       onClick={onClose}
     >
       <motion.div 
-        className="bg-white rounded-lg shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+        className="bg-white rounded-lg shadow-2xl w-full max-w-2xl mx-auto overflow-hidden"
         variants={formVariants}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="relative">
-          {/* Background GIF for the header */}
-          <div className="h-32 overflow-hidden relative">
-            <img 
-              src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExaDYwbnZ2cXYwbzk2YzdhaHZ0Z24yczBsYzNsMnVrNmN1Y29lcXZuaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGcIUXIYlsYKWsG4/giphy.gif" 
-              alt="Form background" 
-              className="w-full h-full object-cover opacity-40"
-            />
-            
-            {/* Overlay with gradient */}
-            <div className="absolute inset-0 bg-gradient-to-b from-primary-600/80 to-primary-700/90"></div>
-            
-            <div className="absolute inset-0 flex items-center justify-between px-5">
+          {/* Header with gradient background */}
+          <div className="h-32 bg-gradient-to-r from-primary-600 to-primary-700 relative overflow-hidden">
+            <div className="absolute inset-0 bg-black opacity-20"></div>
+            <div className="absolute inset-0 flex items-center justify-between px-6">
               <div>
                 <h2 className="text-2xl font-bold text-white">
                   Add New Activity
                 </h2>
-                <p className="text-primary-100 text-sm">
+                <p className="text-primary-100 text-sm mt-1">
                   Create a new activity for your itinerary
                 </p>
               </div>
@@ -186,202 +214,228 @@ const NewActivityForm = ({ onClose, onAddActivity }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6">
-          <div className="mb-5">
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
-              Activity Description
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 text-gray-400" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" 
+          {submitError && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+              {submitError}
+            </div>
+          )}
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Left Column */}
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
+                  Activity Description
+                </label>
+                <div className="relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-5 w-5 text-gray-400" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" 
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    id="content"
+                    name="content"
+                    value={formData.content}
+                    onChange={handleChange}
+                    className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="e.g., Visit Eiffel Tower"
+                    required
                   />
-                </svg>
+                </div>
               </div>
-              <input
-                type="text"
-                id="content"
-                name="content"
-                value={formData.content}
-                onChange={handleChange}
-                className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="e.g., Visit Eiffel Tower"
-                required
-              />
-            </div>
-          </div>
 
-          <div className="mb-5">
-            <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-1">
-              Time
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 text-gray-400" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
+              <div>
+                <label htmlFor="time" className="block text-sm font-medium text-gray-700 mb-1">
+                  Time
+                </label>
+                <div className="relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-5 w-5 text-gray-400" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="time"
+                    id="time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleChange}
+                    className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    required
                   />
-                </svg>
+                </div>
               </div>
-              <input
-                type="time"
-                id="time"
-                name="time"
-                value={formData.time}
-                onChange={handleChange}
-                className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                required
-              />
-            </div>
-          </div>
 
-          <div className="mb-5">
-            <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
-              Activity Type
-            </label>
-            <div className="mt-1">
-              <select
-                id="type"
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              >
-                {activityTypes.map(type => (
-                  <option key={type.id} value={type.id}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="mb-5">
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-              Location
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 text-gray-400" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
+              <div>
+                <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-1">
+                  Activity Type
+                </label>
+                <select
+                  id="type"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" 
-                  />
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" 
-                  />
-                </svg>
+                  {activityTypes.map(type => (
+                    <option key={type.id} value={type.id}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <input
-                type="text"
-                id="location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="e.g., Eiffel Tower, Paris"
-              />
             </div>
-          </div>
 
-          <div className="mb-5">
-            <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
-              Duration (minutes)
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 text-gray-400" 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
+            {/* Right Column */}
+            <div className="space-y-6">
+              <div>
+                <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+                  Location
+                </label>
+                <div className="relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-5 w-5 text-gray-400" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" 
+                      />
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" 
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    value={formData.location}
+                    onChange={handleChange}
+                    className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="e.g., Eiffel Tower, Paris"
                   />
-                </svg>
+                </div>
               </div>
-              <input
-                type="number"
-                id="duration"
-                name="duration"
-                value={formData.duration}
-                onChange={handleChange}
-                className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="e.g., 120"
-                min="0"
-              />
+
+              <div>
+                <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
+                  Duration (minutes)
+                </label>
+                <div className="relative rounded-md shadow-sm">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-5 w-5 text-gray-400" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    type="number"
+                    id="duration"
+                    name="duration"
+                    value={formData.duration}
+                    onChange={handleChange}
+                    className="pl-10 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    placeholder="e.g., 120"
+                    min="0"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
+                  Notes
+                </label>
+                <textarea
+                  id="notes"
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleChange}
+                  rows="3"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  placeholder="Add any additional notes or details..."
+                ></textarea>
+              </div>
             </div>
           </div>
 
-          <div className="mb-5">
-            <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-              Notes
-            </label>
-            <div className="mt-1">
-              <textarea
-                id="notes"
-                name="notes"
-                value={formData.notes}
-                onChange={handleChange}
-                rows="3"
-                className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder="Add any additional notes or details..."
-              ></textarea>
-            </div>
-          </div>
-
-          <div className="flex justify-end space-x-3">
+          <div className="mt-8 flex justify-end space-x-3">
             <motion.button
               type="button"
               onClick={onClose}
               className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
+              disabled={isSubmitting}
             >
               Cancel
             </motion.button>
             
             <motion.button
               type="submit"
-              className="px-4 py-2 text-white bg-primary-600 rounded-md hover:bg-primary-700 transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              className={`px-4 py-2 text-white rounded-md transition-colors ${
+                isSubmitting 
+                  ? 'bg-primary-400 cursor-not-allowed' 
+                  : 'bg-primary-600 hover:bg-primary-700'
+              }`}
+              whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+              whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+              disabled={isSubmitting}
             >
-              Add Activity
+              {isSubmitting ? (
+                <div className="flex items-center">
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Adding...
+                </div>
+              ) : (
+                'Add Activity'
+              )}
             </motion.button>
           </div>
         </form>

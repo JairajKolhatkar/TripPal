@@ -11,7 +11,9 @@ const ItineraryBoard = ({
   removeActivity,
   currentTimeZone = 'local',
   tripStartDate = new Date(),
-  destinationTimeZone = 'UTC'
+  destinationTimeZone = 'UTC',
+  homeTimeZone,
+  showHomeTime
 }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [history, setHistory] = useState([data]);
@@ -193,6 +195,8 @@ const ItineraryBoard = ({
                             removeActivity={removeActivity}
                             isCurrentDay={hasCurrentActivity}
                             destinationTimeZone={destinationTimeZone}
+                            homeTimeZone={homeTimeZone}
+                            showHomeTime={showHomeTime}
                           />
                         </div>
                       )}

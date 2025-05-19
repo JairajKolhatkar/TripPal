@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { DragDropContext } from 'react-beautiful-dnd';
 import ItineraryBoard from '../components/ItineraryBoard';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import BackgroundSlider from '../components/BackgroundSlider';
 import { useTheme } from '../contexts/ThemeContext';
 import { useBackground } from '../contexts/BackgroundContext';
 import api from '../services/api';
 import NewActivityForm from '../components/NewActivityForm';
+import BudgetSummary from '../components/BudgetSummary';
 
 const ItineraryPage = () => {
   const { tripId } = useParams();
@@ -18,98 +19,99 @@ const ItineraryPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [destinationTimeZone, setDestinationTimeZone] = useState('UTC');
+  const [homeTimeZone, setHomeTimeZone] = useState('UTC');
+  const [showHomeTime, setShowHomeTime] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDayId, setSelectedDayId] = useState(null);
   const [isNewTrip, setIsNewTrip] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
   
-  // Fetch trip data from API
+  useEffect(() => {
+    console.log('Current tripId:', tripId);
+    console.log('Current loading state:', loading);
+    console.log('Current error state:', error);
+    console.log('Current itinerary data:', itineraryData);
+  }, [tripId, loading, error, itineraryData]);
+
   useEffect(() => {
     const fetchTripData = async () => {
       try {
         setLoading(true);
-        
-        // Fetch the trip
-        const trip = await api.trips.getTripById(tripId);
-        if (!trip) {
-          setError(`Trip with ID ${tripId} not found`);
-          setLoading(false);
-          return;
+        setError(null);
+        console.log('Fetching trip data for ID:', tripId);
+
+        // Fetch trip data
+        const tripData = await api.trips.getTripById(tripId);
+        console.log('Received trip data:', tripData);
+
+        if (!tripData) {
+          throw new Error('Trip not found');
         }
-        
-        // Check if this is a new trip (created within the last minute)
-        const tripCreationTime = new Date(trip.createdAt);
-        const now = new Date();
-        const isNew = (now - tripCreationTime) < 60000; // 60000ms = 1 minute
-        setIsNewTrip(isNew);
-        
-        // Set time zone from trip data
-        setDestinationTimeZone(trip.timeZone || 'UTC');
-        
-        // Fetch days for this trip
+
+        // Fetch days data
         const daysData = await api.days.getDaysByTripId(tripId);
-        
-        // Fetch activities for this trip
+        console.log('Received days data:', daysData);
+
+        // Fetch activities data
         const activitiesData = await api.activities.getActivitiesByTripId(tripId);
-        
-        // Transform the data into the structure needed by ItineraryBoard
-        const days = {};
-        const dayOrder = [];
-        const activities = {};
-        
-        // Organize days
-        daysData.forEach(day => {
-          days[day.id] = {
-            id: day.id,
-            title: day.title,
-            activityIds: day.activityIds || []
-          };
-          dayOrder.push(day.id);
+        console.log('Received activities data:', activitiesData);
+
+        // Convert days data to array if it's an object
+        const daysArray = Array.isArray(daysData) ? daysData : Object.values(daysData);
+        const activitiesArray = Array.isArray(activitiesData) ? activitiesData : Object.values(activitiesData);
+
+        // Organize days and activities
+        const organizedDays = {};
+        const organizedActivities = {};
+
+        daysArray.forEach(day => {
+          if (day.tripId === tripId) {
+            organizedDays[day.id] = {
+              ...day,
+              activityIds: [] // Initialize empty activityIds array
+            };
+          }
         });
-        
-        // Sort dayOrder by date if needed
-        dayOrder.sort((a, b) => {
-          const dateA = new Date(days[a].date || '');
-          const dateB = new Date(days[b].date || '');
-          return dateA - dateB;
+
+        activitiesArray.forEach(activity => {
+          if (activity.tripId === tripId && organizedDays[activity.dayId]) {
+            organizedActivities[activity.id] = activity;
+            if (!organizedDays[activity.dayId].activityIds) {
+              organizedDays[activity.dayId].activityIds = [];
+            }
+            organizedDays[activity.dayId].activityIds.push(activity.id);
+          }
         });
-        
-        // Organize activities
-        activitiesData.forEach(activity => {
-          activities[activity.id] = {
-            id: activity.id,
-            content: activity.content,
-            time: activity.time,
-            type: activity.type,
-            location: activity.location,
-            notes: activity.notes
-          };
+
+        console.log('Organized data:', {
+          days: organizedDays,
+          activities: organizedActivities
         });
-        
-        // Create the final data structure
+
         setItineraryData({
-          ...trip,
-          days,
-          dayOrder,
-          activities
+          ...tripData,
+          days: organizedDays,
+          activities: organizedActivities,
+          dayOrder: Object.keys(organizedDays) // Add dayOrder array
         });
-        
-        // If this is a new trip, open the Add Activity modal for the first day
-        if (isNew && daysData.length > 0) {
-          setSelectedDayId(daysData[0].id);
-          setIsModalOpen(true);
-        }
-        
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching trip data:', err);
-        setError('Failed to load trip data. Please try again later.');
+
+        // Set time zones
+        setDestinationTimeZone(tripData.destinationTimeZone || 'UTC');
+        setHomeTimeZone(tripData.homeTimeZone || 'UTC');
+
+      } catch (error) {
+        console.error('Error fetching trip data:', error);
+        setError(error.message || 'Failed to load trip data. Please try again later.');
+      } finally {
         setLoading(false);
       }
     };
-    
-    fetchTripData();
+
+    if (tripId) {
+      fetchTripData();
+    }
   }, [tripId]);
-  
+
   const handleDragEnd = (result) => {
     // Implement drag handling logic for activities and days
     console.log('Drag ended:', result);
@@ -182,7 +184,8 @@ const ItineraryPage = () => {
       // Create the new activity
       const newActivity = await api.activities.createActivity({
         ...activityData,
-        itineraryId: tripId,
+        tripId: tripId,
+        dayId: selectedDayId,
         date: itineraryData.days[selectedDayId].date
       });
       
@@ -190,29 +193,32 @@ const ItineraryPage = () => {
       const day = itineraryData.days[selectedDayId];
       const updatedDay = {
         ...day,
-        activityIds: [...day.activityIds, newActivity.id]
+        activityIds: [...(day.activityIds || []), newActivity.id]
       };
       
       await api.days.updateDay(selectedDayId, updatedDay);
       
       // Update local state
-      setItineraryData({
-        ...itineraryData,
+      setItineraryData(prev => ({
+        ...prev,
         activities: {
-          ...itineraryData.activities,
+          ...prev.activities,
           [newActivity.id]: newActivity
         },
         days: {
-          ...itineraryData.days,
+          ...prev.days,
           [selectedDayId]: updatedDay
         }
-      });
+      }));
       
+      // Close the modal
       setIsModalOpen(false);
       setSelectedDayId(null);
+      
+      return newActivity; // Return the new activity for the success message
     } catch (err) {
       console.error('Error adding activity:', err);
-      // Handle error (show notification, etc.)
+      throw new Error('Failed to add activity. Please try again.');
     }
   };
   
@@ -257,6 +263,17 @@ const ItineraryPage = () => {
   
   return (
     <div className={`min-h-screen relative overflow-hidden ${isDarkMode ? 'dark' : ''}`}>
+      {/* Offline mode banner */}
+      {isOffline && (
+        <motion.div
+          className="fixed top-0 left-0 right-0 bg-yellow-500 text-white text-center py-2 z-50"
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+        >
+          You're in Offline Mode
+        </motion.div>
+      )}
+
       {/* Dynamic background slider */}
       <BackgroundSlider images={backgroundImages} interval={8000} />
       
@@ -297,6 +314,19 @@ const ItineraryPage = () => {
                 </button>
               </div>
             </div>
+          ) : !itineraryData ? (
+            <div className="backdrop-blur-sm bg-white/70 p-6 rounded-xl shadow-lg">
+              <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-6 py-4 rounded-md">
+                <h3 className="text-lg font-semibold mb-2">No Data</h3>
+                <p>No itinerary data found for this trip.</p>
+                <button 
+                  onClick={() => navigate('/dashboard')} 
+                  className="mt-4 px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
+                >
+                  Return to Dashboard
+                </button>
+              </div>
+            </div>
           ) : (
             <>
               <div className="mb-8 backdrop-blur-sm bg-white/70 p-6 rounded-xl shadow-lg">
@@ -309,6 +339,18 @@ const ItineraryPage = () => {
                     <p className="text-gray-600">{itineraryData.location}</p>
                   </div>
                   <div className="flex space-x-2">
+                    {/* Time zone toggle */}
+                    <motion.button
+                      className="px-4 py-2 bg-primary-50 text-primary-700 rounded hover:bg-primary-100 font-medium flex items-center"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => setShowHomeTime(!showHomeTime)}
+                    >
+                      <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {showHomeTime ? 'Show Destination Time' : 'Show Home Time'}
+                    </motion.button>
                     <motion.button
                       className="px-4 py-2 bg-primary-50 text-primary-700 rounded hover:bg-primary-100 font-medium flex items-center"
                       whileHover={{ scale: 1.03 }}
@@ -333,17 +375,31 @@ const ItineraryPage = () => {
                 </div>
               </div>
               
-              <div className="backdrop-blur-sm bg-white/70 p-6 rounded-xl shadow-lg">
-                <DragDropContext onDragEnd={handleDragEnd}>
-                  <ItineraryBoard
-                    data={itineraryData}
-                    removeDay={removeDay}
-                    editDayTitle={editDayTitle}
-                    openAddActivityModal={openAddActivityModal}
-                    removeActivity={removeActivity}
-                    destinationTimeZone={destinationTimeZone}
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                {/* Budget Summary Sidebar */}
+                <div className="lg:col-span-1">
+                  <BudgetSummary
+                    tripId={tripId}
+                    days={itineraryData.days}
+                    activities={itineraryData.activities}
                   />
-                </DragDropContext>
+                </div>
+                
+                {/* Main Itinerary Board */}
+                <div className="lg:col-span-3 backdrop-blur-sm bg-white/70 p-6 rounded-xl shadow-lg">
+                  <DragDropContext onDragEnd={handleDragEnd}>
+                    <ItineraryBoard
+                      data={itineraryData}
+                      removeDay={removeDay}
+                      editDayTitle={editDayTitle}
+                      openAddActivityModal={openAddActivityModal}
+                      removeActivity={removeActivity}
+                      destinationTimeZone={destinationTimeZone}
+                      homeTimeZone={homeTimeZone}
+                      showHomeTime={showHomeTime}
+                    />
+                  </DragDropContext>
+                </div>
               </div>
             </>
           )}

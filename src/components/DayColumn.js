@@ -14,31 +14,45 @@ const DayColumn = ({
   openAddActivityModal,
   removeActivity,
   isCurrentDay = false,
-  destinationTimeZone = 'UTC'
+  destinationTimeZone = 'UTC',
+  homeTimeZone = 'UTC',
+  showHomeTime = false
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(day.title);
   const [isHovered, setIsHovered] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [currentTime, setCurrentTime] = useState(null);
+  const [showWeatherForecast, setShowWeatherForecast] = useState(false);
   const [weatherData, setWeatherData] = useState({
     temperature: Math.floor(Math.random() * 15) + 15, // Random temp between 15-30°C
-    condition: ['☀️', '⛅', '🌧️', '❄️', '🌪️'][Math.floor(Math.random() * 5)] // Random weather condition
+    condition: ['☀️', '⛅', '🌧️', '❄️', '🌪️'][Math.floor(Math.random() * 5)], // Random weather condition
+    forecast: [
+      { time: '09:00', condition: '☀️', temp: Math.floor(Math.random() * 15) + 15 },
+      { time: '12:00', condition: '⛅', temp: Math.floor(Math.random() * 15) + 15 },
+      { time: '15:00', condition: '🌧️', temp: Math.floor(Math.random() * 15) + 15 },
+      { time: '18:00', condition: '☀️', temp: Math.floor(Math.random() * 15) + 15 }
+    ]
   });
 
   useEffect(() => {
     if (isCurrentDay) {
       setShowTimeline(true);
       
-      // Update current time for the destination timezone
+      // Update current time for both time zones
       const updateTime = () => {
         try {
-          const options = { timeZone: destinationTimeZone, hour12: false };
-          const timeString = new Date().toLocaleTimeString('en-US', options);
-          setCurrentTime(timeString);
+          const now = new Date();
+          const destOptions = { timeZone: destinationTimeZone, hour12: false };
+          const homeOptions = { timeZone: homeTimeZone, hour12: false };
+          
+          const destTime = now.toLocaleTimeString('en-US', destOptions);
+          const homeTime = now.toLocaleTimeString('en-US', homeOptions);
+          
+          setCurrentTime({ destination: destTime, home: homeTime });
         } catch (e) {
           const timeString = new Date().toLocaleTimeString();
-          setCurrentTime(timeString);
+          setCurrentTime({ destination: timeString, home: timeString });
         }
       };
       
@@ -47,7 +61,7 @@ const DayColumn = ({
       
       return () => clearInterval(timerId);
     }
-  }, [isCurrentDay, destinationTimeZone]);
+  }, [isCurrentDay, destinationTimeZone, homeTimeZone]);
 
   const handleTitleChange = (e) => {
     setTitle(e.target.value);
@@ -62,7 +76,7 @@ const DayColumn = ({
   const getCurrentActivity = () => {
     if (!currentTime) return null;
     
-    const [hours, minutes] = currentTime.split(':');
+    const [hours, minutes] = currentTime.destination.split(':');
     const currentHour = parseInt(hours, 10);
     const currentMinute = parseInt(minutes, 10);
     
@@ -168,13 +182,15 @@ const DayColumn = ({
               {day.title}
             </h2>
             
-            {/* Weather indicator */}
+            {/* Weather indicator with forecast */}
             <AnimatePresence>
               <motion.div 
-                className="flex items-center ml-2 text-sm bg-gray-100 px-2 py-1 rounded-full"
+                className="flex items-center ml-2 text-sm bg-gray-100 px-2 py-1 rounded-full cursor-pointer"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
+                whileHover={{ scale: 1.05 }}
+                onClick={() => setShowWeatherForecast(!showWeatherForecast)}
               >
                 <span className="mr-1">{weatherData.condition}</span>
                 <span>{weatherData.temperature}°C</span>
@@ -227,14 +243,42 @@ const DayColumn = ({
         </div>
       </div>
 
+      {/* Weather forecast popup */}
+      {showWeatherForecast && (
+        <motion.div
+          className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg p-4 z-50"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+        >
+          <h3 className="text-sm font-semibold mb-2">Weather Forecast</h3>
+          <div className="grid grid-cols-2 gap-2">
+            {weatherData.forecast.map((forecast, index) => (
+              <div key={index} className="text-sm">
+                <span className="font-medium">{forecast.time}</span>
+                <span className="ml-2">{forecast.condition}</span>
+                <span className="ml-2">{forecast.temp}°C</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
       {/* Local time display when it's the current day */}
-      {isCurrentDay && (
+      {isCurrentDay && currentTime && (
         <motion.div
           className="bg-primary-50 p-2 text-center text-sm font-medium text-primary-800 border-b border-primary-100"
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
         >
-          Current local time: {currentTime ? currentTime.substring(0, 5) : '--:--'}
+          <div className="flex justify-between items-center">
+            <span>Destination: {currentTime.destination.substring(0, 5)}</span>
+          </div>
+          {showHomeTime && (
+            <div className="mt-1 text-primary-700">
+              Home: {currentTime.home.substring(0, 5)}
+            </div>
+          )}
         </motion.div>
       )}
 
@@ -270,8 +314,8 @@ const DayColumn = ({
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 style={{
-                  top: `${(parseInt(currentTime.split(':')[0], 10) * 60 + 
-                           parseInt(currentTime.split(':')[1], 10)) / 1440 * 100}%`
+                  top: `${(parseInt(currentTime.destination.split(':')[0], 10) * 60 + 
+                           parseInt(currentTime.destination.split(':')[1], 10)) / 1440 * 100}%`
                 }}
               >
                 <div className="absolute -top-2 -right-1 w-4 h-4 rounded-full bg-primary-500"></div>
